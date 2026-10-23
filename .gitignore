@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.py[cod]
+.streamlit/secrets.toml
+.code-review-graph/
+tmp/
+
+# Configuración local y credenciales.
+.env
+.env.*
+!.env.example

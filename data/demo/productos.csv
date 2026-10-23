@@ -1,0 +1,17 @@
+producto_id;nombre;categoria
+0001;Arroz extra 1 kg;Abarrotes
+0002;Aceite vegetal 1 L;Abarrotes
+0003;Azúcar rubia 1 kg;Abarrotes
+0004;Fideos tallarín 500 g;Abarrotes
+0005;Leche evaporada 400 g;Abarrotes
+0006;Agua sin gas 625 ml;Bebidas
+0007;Gaseosa cola 1.5 L;Bebidas
+0008;Néctar de durazno 1 L;Bebidas
+0009;Bebida isotónica 500 ml;Bebidas
+0010;Detergente en polvo 800 g;Limpieza
+0011;Lejía 1 L;Limpieza
+0012;Lavavajillas 750 g;Limpieza
+0013;Limpiador multiuso 900 ml;Limpieza
+0014;Jabón de tocador 90 g;Cuidado personal
+0015;Pasta dental 90 g;Cuidado personal
+0016;Champú familiar 400 ml;Cuidado personal
