@@ -1,4 +1,4 @@
-"""Primer avance del SSD: dashboard descriptivo de ventas e inventario."""
+"""Dashboard de inventario, demanda y soporte a la reposición."""
 
 from pathlib import Path
 
@@ -7,6 +7,8 @@ import streamlit as st
 
 from src.datos import ErrorDatos, cargar_csv, validar_relaciones
 from src.indicadores import indicadores, preparar_resumen
+from src.demanda import estimar_demanda
+from src.panel_analisis import panel_reposicion, panel_evaluacion, panel_segmentacion
 
 
 RAIZ = Path(__file__).resolve().parent
@@ -74,7 +76,7 @@ def main():
     with st.sidebar:
         st.markdown('<div class="brand">tottus<span style="color:#a6bd42">.</span></div>'
                     '<div class="brand-sub">SOPORTE DE DECISIONES</div>', unsafe_allow_html=True)
-        st.caption('PRIMER AVANCE · INVENTARIO')
+        st.caption('INVENTARIO · ANÁLISIS · REPOSICIÓN')
         fuente = st.radio('Fuente de información', ['Demo académica', 'Cargar mis CSV'], key='fuente')
 
     st.markdown('''<div class="hero"><div class="eyebrow">ABASTECIMIENTO / PANEL DE CONTROL</div>
@@ -131,6 +133,8 @@ def main():
         cortes = sorted(inventario['fecha_corte'].dt.date.unique(), reverse=True)
         corte = st.selectbox('Corte de inventario', cortes, format_func=lambda fecha: fecha.strftime('%d/%m/%Y'), key='corte')
         st.caption('El periodo filtra las ventas. El stock corresponde únicamente al corte seleccionado.')
+        ventana = st.selectbox('Ventana del modelo (días)', [14, 28, 42, 56], index=1, key='ventana_modelo')
+        st.caption('Demanda, evaluación y segmentos usan el histórico hasta el corte de inventario, independientemente del periodo descriptivo.')
         st.divider()
         st.caption('PROTOTIPO ACADÉMICO\n\nPython · pandas · Streamlit · CSV')
 
@@ -162,7 +166,9 @@ def main():
     if sin_ventas:
         st.caption(f'{sin_ventas} producto(s) sin registros de ventas en el periodo; no se interpretan automáticamente como cero ventas.')
 
-    general, detalle, alcance = st.tabs(['Vista general', 'Detalle de inventario', 'Datos y alcance'])
+    general, detalle, reposicion, evaluacion, segmentos, alcance = st.tabs([
+        'Vista general', 'Detalle de inventario', 'Reposición y escenarios',
+        'Evaluación de demanda', 'Segmentación', 'Datos y alcance'])
     ventas_filtradas = ventas[ventas['producto_id'].isin(catalogo['producto_id']) &
                               ventas['fecha'].between(pd.Timestamp(inicio), pd.Timestamp(fin))]
     with general:
@@ -242,14 +248,22 @@ def main():
                 })
                 st.caption('Hasta 10 productos, ordenados por estado y nombre. La tabla contiene la selección completa.')
 
+    demanda = estimar_demanda(catalogo, ventas, corte, ventana)
+    with reposicion:
+        panel_reposicion(demanda, inventario, corte, ventana)
+    with evaluacion:
+        panel_evaluacion(catalogo, ventas, corte, ventana, grafico)
+    with segmentos:
+        panel_segmentacion(demanda, grafico)
+
     with alcance:
-        st.subheader('Un primer paso hacia el soporte de decisiones')
-        st.write('Este avance integra productos, ventas e inventario para facilitar la revisión del abastecimiento. Las alertas son descriptivas y dependen del stock mínimo definido en los CSV.')
+        st.subheader('Del análisis de inventario al soporte de decisiones')
+        st.write('Integramos ventas e inventario con una demanda de referencia, una política de reposición explicable y escenarios de demanda, plazo y stock. La vista general conserva sus alertas descriptivas por stock mínimo.')
         uno, dos = st.columns(2)
         with uno:
-            st.markdown('**Disponible en este avance**\n\n- Carga y validación de tres CSV.\n- Filtros por categoría, producto y fechas.\n- Indicadores y visualización de ventas.\n- Alertas por stock cero y bajo mínimo.\n- Descarga del detalle de inventario.')
+            st.markdown('**Disponible en este avance**\n\n- Datos CSV, filtros e indicadores.\n- Demanda por media móvil y evaluación temporal.\n- Punto de reorden y sugerencia explicada.\n- Comparación de escenarios What-If.\n- Segmentación K-means de productos.\n- Descarga de tablas analíticas.')
         with dos:
-            st.markdown('**Siguiente etapa del LRPD**\n\n- Evaluar un modelo de demanda.\n- Calcular el punto de reorden.\n- Clasificar riesgo futuro de quiebre.\n- Explicar cantidades sugeridas de reposición.\n- Comparar escenarios What-If.')
+            st.markdown('**Siguientes mejoras**\n\n- Calibrar con datos operativos reales.\n- Validar el horizonte completo de reposición.\n- Considerar pedidos en tránsito y reservas.\n- Incorporar restricciones de compra.\n- Evaluar clasificación supervisada cuando exista un histórico de quiebres etiquetado.')
         st.divider()
         st.markdown('**Datos de demostración**')
         st.write('16 productos de 4 categorías, 1 328 registros diarios del 01/08/2026 al 22/10/2026 y un corte de inventario al 22/10/2026. Una sola sede ficticia. El stock es una fotografía preparada: este dataset no simula un libro completo de entradas y salidas.')
@@ -264,7 +278,7 @@ def main():
             st.caption('Fechas AAAA-MM-DD; cantidades enteras no negativas; códigos como texto. Cada combinación de producto y fecha debe ser única. No se corrigen datos inválidos silenciosamente.')
 
     st.divider()
-    st.caption('TOTTUS · CASO ACADÉMICO / SISTEMAS DE SOPORTE DE DECISIONES · Primer avance descriptivo')
+    st.caption('TOTTUS · CASO ACADÉMICO / SISTEMAS DE SOPORTE DE DECISIONES · Análisis de inventario y reposición')
 
 
 if __name__ == '__main__':

@@ -4,9 +4,9 @@ Sistema de soporte de decisiones para el análisis de ventas e inventario, desar
 
 Nuestro objetivo es apoyar la reposición de productos mediante un dashboard que reúna las ventas históricas, el stock disponible y los productos que requieren atención. Tomamos a Tottus como caso de estudio y trabajamos con datos simulados para fines académicos.
 
-## Primer avance
+## Avance actual
 
-En esta versión implementamos el análisis descriptivo de ventas e inventario:
+En esta versión integramos el análisis descriptivo con una primera política de reposición:
 
 - Indicadores de productos analizados, unidades vendidas, productos sin stock y productos bajo el mínimo.
 - Filtros por categoría, producto, periodo de ventas y fecha de corte del inventario.
@@ -15,8 +15,13 @@ En esta versión implementamos el análisis descriptivo de ventas e inventario:
 - Detalle de inventario y comparación del stock actual frente al mínimo.
 - Carga y validación de archivos CSV.
 - Descarga del reporte de inventario.
+- Demanda de referencia mediante media móvil sobre un histórico diario completo.
+- Evaluación temporal frente a una referencia semanal, con MAE, RMSE y WAPE.
+- Punto de reorden, cobertura, prioridad de atención y cantidad sugerida explicada.
+- Comparación What-If de demanda, plazo de entrega y stock.
+- Segmentación K-means de productos por venta diaria y variabilidad.
 
-El pronóstico de demanda, el punto de reorden y los escenarios de reposición forman parte de las siguientes etapas.
+La prioridad es una regla del ejercicio, no una probabilidad de quiebre. Los modelos y parámetros requieren calibración con datos operativos antes de su uso real.
 
 ## Tecnologías
 
@@ -24,6 +29,7 @@ El pronóstico de demanda, el punto de reorden y los escenarios de reposición f
 - pandas para carga, validación, integración y análisis de datos.
 - Streamlit para la interfaz y los gráficos interactivos.
 - CSV como fuente de datos.
+- scikit-learn para agrupamiento, estandarización y métricas.
 
 ## Instalación y ejecución
 
@@ -103,6 +109,10 @@ app.py                      Interfaz, filtros y visualizaciones.
 src/
   datos.py                  Lectura y validación de CSV.
   indicadores.py            Integración de datos y cálculo de indicadores.
+  demanda.py                Media móvil y evaluación temporal.
+  reposicion.py             Política de reposición y escenarios.
+  segmentacion.py           Agrupamiento K-means y perfiles.
+  panel_analisis.py          Paneles de análisis y comparación.
 data/demo/                  Datos de demostración.
 scripts/generar_demo.py     Generación reproducible de los CSV.
 tests/                      Pruebas de datos, indicadores e interfaz.
@@ -122,19 +132,45 @@ Para ejecutar las pruebas en Windows:
 
 En Linux o macOS, utilizar `.venv/bin/python` en lugar de `.\.venv\Scripts\python.exe`.
 
-Comprobamos la validación de los CSV, el cálculo de los indicadores, el tratamiento de datos faltantes y el funcionamiento de los filtros de la interfaz.
+Comprobamos la validación de los CSV, los indicadores, el tratamiento de datos faltantes, la ausencia de información futura en las predicciones, las fórmulas de reposición, la reproducibilidad de los grupos y los filtros de la interfaz.
 
-## Alcance actual y siguientes pasos
+## Análisis de demanda y reposición
 
-Las alertas de esta versión comparan el stock disponible con el mínimo definido en el archivo. La **brecha al mínimo** indica cuántas unidades faltan para llegar a ese umbral; todavía no constituye una recomendación de compra.
+La **vista general** mantiene las alertas de stock frente al mínimo del CSV. La **brecha al mínimo** describe ese faltante y es independiente de la política del panel **Reposición y escenarios**.
+
+La demanda de referencia es el promedio de ventas diarias de los últimos 28 días hasta el corte de inventario. La ventana puede cambiarse entre 14, 28, 42 y 56 días. Exigimos registros para todos los días; los ceros conocidos son válidos y los días ausentes no se imputan. El filtro de periodo afecta a la vista descriptiva; los modelos utilizan su ventana hasta el corte.
+
+La política base usa un plazo de entrega de 3 días, revisión cada 7 días y seguridad de 2 días de venta estimada. Son parámetros del ejercicio y pueden modificarse:
+
+1. Stock de seguridad = venta diaria estimada × días de seguridad.
+2. Punto de reorden = venta diaria estimada × plazo de entrega + stock de seguridad.
+3. Stock objetivo = venta diaria estimada × (plazo + revisión) + stock de seguridad.
+4. Si el stock está en o bajo el punto de reorden, sugerimos la diferencia hasta el objetivo; de otro modo, la sugerencia es cero.
+
+Redondeamos hacia arriba seguridad, reorden y objetivo. No se calculan cantidades con histórico incompleto o inventario desconocido. El escenario modifica demanda, plazo y stock sin cambiar los CSV; su descarga incluye los parámetros utilizados.
+
+La prioridad **alta** indica que el stock no supera las ventas estimadas durante el plazo. La **media** indica que se alcanza el punto de reorden con su colchón de seguridad, y la **baja** que el stock supera ese punto. Si no hay ventas en toda la ventana, mostramos **Sin demanda reciente**, con cantidad cero bajo ese supuesto.
+
+## Evaluación y segmentación
+
+Aplicamos los temas de segmentación y evaluación trabajados en clase:
+
+- **Evaluación temporal:** comparamos la media móvil con un ingenuo semanal que repite la venta de siete días antes. Evaluamos los últimos 14 días, prediciendo un día adelante en cada origen con datos estrictamente anteriores. Incorporamos cada observación cuando ya es conocida para predecir el día siguiente. Ambos métodos se comparan en los mismos productos y fechas.
+- **Métricas:** MAE y RMSE en unidades por producto-día; WAPE como error absoluto total dividido por la venta observada total. WAPE queda sin definir cuando el total observado es cero. Esta evaluación exploratoria de un día no valida automáticamente un horizonte de reposición de varios días.
+- **Segmentación:** estandarizamos venta diaria media y coeficiente de variación, y aplicamos K-means con semilla fija. Mostramos perfiles en la escala original y silueta cuando está definida. Los grupos son relativos a la selección actual y sirven para revisar diferencias entre productos.
+
+Los clasificadores supervisados de quiebres quedan para una etapa con eventos históricos etiquetados. Los estados definidos por reglas no se utilizan como si fueran resultados observados para entrenar un clasificador.
+
+La [metodología del análisis](docs/metodologia-analisis.md) detalla supuestos, fórmulas, evaluación y relación con las sesiones de clase.
+
+## Siguientes pasos
 
 En las siguientes etapas trabajaremos en:
 
-1. Estimación y evaluación de la demanda.
-2. Cálculo del punto de reorden.
-3. Clasificación del riesgo de quiebre de stock.
-4. Recomendaciones de reposición explicadas por producto.
-5. Comparación de escenarios What-If.
+1. Calibrar parámetros por producto con datos operativos.
+2. Validar pronósticos al horizonte completo de reposición y comparar estacionalidad.
+3. Incorporar pedidos en tránsito, reservas, lotes mínimos y restricciones de compra.
+4. Evaluar clasificación supervisada con eventos de quiebre realmente observados.
 
 El proyecto funciona de manera local y no se conecta a sistemas internos de Tottus. La decisión final de reposición corresponde al responsable de abastecimiento.
 

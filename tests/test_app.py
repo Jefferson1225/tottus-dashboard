@@ -45,6 +45,26 @@ class DashboardTests(unittest.TestCase):
         self.assertTrue(app.info)
         self.assertEqual(len(app.metric), 0)
 
+    def test_reposicion_compara_escenario_y_respeta_demanda_nula(self):
+        app = AppTest.from_file(str(APP), default_timeout=60).run()
+        self.assertFalse(app.exception)
+        self.assertIn('Reposición y escenarios', [p.label for p in app.tabs])
+        app.multiselect(key='productos').set_value(['0016']).run()
+        self.assertFalse(app.exception)
+        self.assertEqual(next(m.value for m in app.metric if m.label == 'Unidades sugeridas · base'), '0')
+        self.assertEqual(next(m.value for m in app.metric if m.label == 'Unidades sugeridas · escenario'), '0')
+        self.assertTrue(app.info)  # No hay suficientes productos para segmentar.
+
+    def test_estres_aumenta_propuesta_y_parametros_no_alteran_ventas(self):
+        app = AppTest.from_file(str(APP), default_timeout=60).run()
+        unidades = app.metric[1].value
+        base = int(next(m.value for m in app.metric if m.label == 'Unidades sugeridas · base').replace(' ', ''))
+        app.slider(key='variacion_demanda').set_value(50).run()
+        self.assertFalse(app.exception)
+        escenario = int(next(m.value for m in app.metric if m.label == 'Unidades sugeridas · escenario').replace(' ', ''))
+        self.assertGreater(escenario, base)
+        self.assertEqual(app.metric[1].value, unidades)
+
 
 if __name__ == '__main__':
     unittest.main()

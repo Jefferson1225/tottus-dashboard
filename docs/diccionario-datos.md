@@ -48,16 +48,39 @@ Grano: un producto en una fecha de corte. Clave compuesta: `fecha_corte`, `produ
 
 La fotografía de inventario debe cubrir el catálogo analizado. Si falta un producto, se señalará como «Sin datos», sin interpretarlo como stock cero. Un CSV con varios cortes permite seleccionar uno desde el menú lateral antes de integrar los datos.
 
-## Parámetros que se incorporarán con el modelo
+## Parámetros del modelo
 
 | Parámetro | Unidad | Uso posterior |
 | --- | --- | --- |
-| `stock_seguridad` | Unidades por producto | Colchón para el cálculo del punto de reorden. No se asumirá idéntico al stock mínimo. |
-| `tiempo_reposicion_dias` | Días por producto | Plazo entre solicitar y recibir mercadería. |
-| `periodo_revision_dias` | Días | Intervalo de revisión de la política elegida. |
-| `variacion_demanda_pct` | Porcentaje | Control de escenario, con base en 0 %. |
+| `ventana_dias` | Días | Ventana completa de ventas hasta el corte; 28 por defecto. |
+| `plazo_base` | Días | Plazo de entrega común a la selección; 3 por defecto. |
+| `revision_dias` | Días | Intervalo de revisión; 7 por defecto. |
+| `seguridad_dias` | Días de venta | Colchón de seguridad; 2 por defecto. |
+| `variacion_demanda_pct` | Porcentaje | Escenario respecto a la media; base 0 %. |
+| `retraso_dias` | Días | Incremento de plazo en el escenario; base 0. |
+| `cambio_stock_pct` | Porcentaje | Cambio relativo del stock en el escenario; base 0 %. |
 
-Los parámetros serán explícitos y no negativos, salvo la variación porcentual de demanda, que podrá ser negativa hasta -100 %. Cuando se introduzcan pedidos en tránsito o reservas habrá que ampliar el modelo de inventario disponible antes de recomendar compras.
+Los plazos y días de seguridad son no negativos; la revisión debe ser mayor que cero. Las variaciones porcentuales de demanda y stock admiten disminuciones hasta -100 %. Estos parámetros se controlan en pantalla y no agregan columnas obligatorias a los tres CSV originales. Cuando se introduzcan pedidos en tránsito o reservas habrá que ampliar el modelo de inventario disponible antes de recomendar compras.
+
+## Resultados analíticos
+
+| Variable | Unidad / interpretación |
+| --- | --- |
+| `demanda_diaria` | Unidades/día; media de la ventana completa, o desconocida si faltan registros. |
+| `desviacion_diaria` | Desviación poblacional de las ventas diarias. |
+| `cv` | Desviación / media; 0 para una ventana completa de ceros. |
+| `dias_observados` | Número de días con dato válido dentro de la ventana. |
+| `historial` | Completo o descripción de días faltantes. |
+| `stock_seguridad` | `ceil(demanda_escenario × seguridad_dias)`, en unidades. |
+| `punto_reorden` | Umbral de la política; distinto de stock mínimo del CSV. |
+| `stock_objetivo` | Cobertura objetivo al plazo + revisión, más seguridad. |
+| `cobertura_dias` | Stock / demanda diaria; sin valor numérico si la demanda es cero. |
+| `cantidad_sugerida` | Unidades propuestas cuando se activa el reorden; desconocida si faltan datos. |
+| `prioridad` | Alta, Media, Baja, Sin demanda reciente, Demanda simulada nula o No evaluable; regla explicable. |
+| `explicacion` | Razón del resultado y valores utilizados. |
+| `segmento` | Perfil relativo de venta obtenido con K-means; no es una clase de riesgo. |
+
+Para fórmulas, evaluación y supuestos, consultar [metodología](metodologia-analisis.md).
 
 ## Indicadores descriptivos de la primera versión
 
@@ -80,4 +103,4 @@ Antes de calcular, comprobar formato, columnas obligatorias, campos vacíos, tip
 
 No sumar stock a través de fechas ni a través de cada fila de ventas. Agregar ventas primero y unir con el corte de inventario por producto, verificando que la unión no multiplique registros.
 
-Para un futuro pronóstico diario, asegurar continuidad de calendario por producto. Completar con cero únicamente los días confirmados sin ventas dentro de la cobertura declarada; distinguir días sin registro, anteriores al alta del producto o con falta de stock.
+Para estimar la demanda exigimos continuidad de calendario por producto durante la ventana. Los días confirmados sin ventas deben venir explícitamente con cero; los días sin registro, anteriores al alta del producto o con falta de stock requieren revisión de la fuente. El modelo no completa huecos automáticamente.
