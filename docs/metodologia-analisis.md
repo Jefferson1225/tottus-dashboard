@@ -25,7 +25,7 @@ Avanzamos un origen por día e incorporamos únicamente las observaciones ya con
 
 Informamos MAE, RMSE y WAPE sobre pares producto-día. MAE = promedio de errores absolutos; RMSE = raíz del promedio de errores cuadrados; WAPE = 100 × suma de errores absolutos / suma de ventas reales. WAPE queda vacío si el denominador es cero. No mostramos un porcentaje de acierto para esta tarea numérica.
 
-La ventana es un control de exploración. No elegimos automáticamente el modelo con el error mínimo de este periodo ni lo presentamos como una prueba final independiente. Una evaluación de un día tampoco demuestra el desempeño al plazo completo de reposición.
+La ventana se puede ajustar. No seleccionamos el modelo automáticamente a partir del error de este periodo. El error a un día tampoco mide el desempeño al plazo completo de reposición.
 
 ## Política de reposición
 
@@ -41,7 +41,7 @@ El stock mínimo del CSV es un umbral descriptivo y no se reutiliza como si fuer
 
 La prioridad es **alta** cuando `I ≤ d × L`; **media** cuando el inventario alcanza el punto de reorden pero supera la venta estimada durante el plazo; **baja** cuando `I > P`. Se presenta **Sin demanda reciente** para una ventana completa de ceros, **Demanda simulada nula** cuando el escenario reduce a cero una demanda base positiva, y **No evaluable** si faltan demanda o inventario. Estas categorías son reglas y no probabilidades ni eventos observados de quiebre.
 
-Suponemos inventario disponible igual a stock actual, sin reservas ni pedidos en tránsito. El objetivo combina plazo y revisión, sujeto al disparador del punto de reorden; es una política simplificada del ejercicio. No optimiza costos, lotes, vencimientos, presupuesto o capacidad. La decisión de compra requiere revisión humana.
+Suponemos inventario disponible igual a stock actual, sin reservas ni pedidos en tránsito. El objetivo combina plazo y revisión, sujeto al punto de reorden. La política no optimiza costos, lotes, vencimientos, presupuesto o capacidad. La decisión de compra requiere revisión humana.
 
 ## Escenarios What-If
 

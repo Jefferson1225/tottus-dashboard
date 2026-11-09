@@ -1,4 +1,4 @@
-"""Política explicable de revisión de inventario para el ejercicio académico."""
+"""Política de revisión y reposición de inventario."""
 
 import math
 

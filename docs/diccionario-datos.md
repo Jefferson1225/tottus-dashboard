@@ -1,4 +1,4 @@
-# Datos mínimos del prototipo
+# Diccionario de datos
 
 Contrato utilizado por la primera implementación. Los ejemplos están en `data/demo/`; `src/datos.py` valida los archivos cargados por la aplicación.
 
@@ -9,7 +9,7 @@ Contrato utilizado por la primera implementación. Los ejemplos están en `data/
 - Primera versión con una sola tienda o ámbito de inventario, declarado junto con el dataset. Si se agregan tiendas, se incorporará `tienda_id` a las claves de ventas e inventario.
 - Unidades enteras para productos contables. Se utilizará un catálogo que excluya productos vendidos por peso en esta primera versión.
 - El periodo de ventas disponible y su fecha de cierre deberán declararse. Una fecha ausente no significa automáticamente cero ventas.
-- Datos preparados identificados como «Simulados para fines académicos»; nombres, stocks y ventas de ejemplo no se presentarán como información real de Tottus.
+- Los datos de ejemplo se identifican como simulados en el dashboard.
 
 ## `productos.csv`: catálogo
 
@@ -44,7 +44,7 @@ Grano: un producto en una fecha de corte. Clave compuesta: `fecha_corte`, `produ
 | `fecha_corte` | Fecha | Obligatoria. El análisis inicial usará un único corte común para todo el catálogo. |
 | `producto_id` | Texto | Debe existir en el catálogo. |
 | `stock_actual` | Entero | Unidades disponibles, mayor o igual que cero. |
-| `stock_minimo` | Entero | Umbral descriptivo definido para el prototipo, mayor o igual que cero. |
+| `stock_minimo` | Entero | Umbral descriptivo de inventario, mayor o igual que cero. |
 
 La fotografía de inventario debe cubrir el catálogo analizado. Si falta un producto, se señalará como «Sin datos», sin interpretarlo como stock cero. Un CSV con varios cortes permite seleccionar uno desde el menú lateral antes de integrar los datos.
 
@@ -95,7 +95,7 @@ Los dos últimos grupos pueden coincidir y no deben sumarse como si fueran categ
 
 En el detalle se muestra `faltante_minimo = max(stock_minimo - stock_actual, 0)`, bajo el nombre «Brecha al mínimo». Es un indicador descriptivo y no una recomendación de compra. Los estados son «Sin stock», «Bajo mínimo», «En nivel mínimo», «Disponible» y «Sin datos»; stock cero tiene precedencia incluso cuando el mínimo es cero.
 
-Las cantidades por fila se limitan a 1 000 000 000 unidades para evitar valores desproporcionados y pérdida de precisión en este prototipo. Los archivos vacíos se rechazan; los días conocidos sin ventas deben registrarse explícitamente con cero.
+Las cantidades por fila se limitan a 1 000 000 000 unidades para evitar valores desproporcionados y pérdida de precisión. Los archivos vacíos se rechazan; los días conocidos sin ventas deben registrarse explícitamente con cero.
 
 ## Validación y manejo de errores
 

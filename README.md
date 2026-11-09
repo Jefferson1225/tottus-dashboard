@@ -1,12 +1,12 @@
 # Tottus Dashboard
 
-Sistema de soporte de decisiones para el análisis de ventas e inventario, desarrollado como proyecto del curso de Sistemas de Soporte de Decisiones.
+Sistema de soporte de decisiones para el análisis de ventas, inventario y reposición.
 
-Nuestro objetivo es apoyar la reposición de productos mediante un dashboard que reúna las ventas históricas, el stock disponible y los productos que requieren atención. Tomamos a Tottus como caso de estudio y trabajamos con datos simulados para fines académicos.
+Reunimos las ventas históricas y el stock disponible para identificar los productos que necesitan reposición. El dashboard se puede explorar con datos de ejemplo o con archivos CSV propios.
 
-## Avance actual
+## Funciones
 
-En esta versión integramos el análisis descriptivo con una primera política de reposición:
+Integramos el análisis de ventas e inventario con una política de reposición:
 
 - Indicadores de productos analizados, unidades vendidas, productos sin stock y productos bajo el mínimo.
 - Filtros por categoría, producto, periodo de ventas y fecha de corte del inventario.
@@ -21,7 +21,7 @@ En esta versión integramos el análisis descriptivo con una primera política d
 - Comparación What-If de demanda, plazo de entrega y stock.
 - Segmentación K-means de productos por venta diaria y variabilidad.
 
-La prioridad es una regla del ejercicio, no una probabilidad de quiebre. Los modelos y parámetros requieren calibración con datos operativos antes de su uso real.
+La prioridad indica el orden de atención según el stock disponible y la demanda estimada; no expresa una probabilidad de quiebre.
 
 ## Tecnologías
 
@@ -72,7 +72,7 @@ Incluimos un conjunto de datos para ejecutar el dashboard desde el primer inicio
 | Corte de inventario | 22/10/2026 |
 | Ámbito | Una sede ficticia de demostración |
 
-Los archivos se encuentran en [`data/demo`](data/demo). No corresponden a operaciones reales de Tottus. El stock es una fotografía preparada para el ejercicio y no se reconstruye a partir de un libro de entradas y salidas.
+Los archivos de [`data/demo`](data/demo) contienen datos simulados. El stock corresponde a un corte de inventario y no se reconstruye a partir de un libro de entradas y salidas.
 
 En la demo hay 3 productos sin stock y 6 bajo el mínimo. Los productos sin stock también están incluidos en el segundo indicador, por lo que ambos conteos no deben sumarse.
 
@@ -106,6 +106,7 @@ El [diccionario de datos](docs/diccionario-datos.md) detalla los campos y las re
 
 ```text
 app.py                      Interfaz, filtros y visualizaciones.
+assets/tottus.svg            Logo del encabezado y la barra lateral.
 src/
   datos.py                  Lectura y validación de CSV.
   indicadores.py            Integración de datos y cálculo de indicadores.
@@ -140,7 +141,7 @@ La **vista general** mantiene las alertas de stock frente al mínimo del CSV. La
 
 La demanda de referencia es el promedio de ventas diarias de los últimos 28 días hasta el corte de inventario. La ventana puede cambiarse entre 14, 28, 42 y 56 días. Exigimos registros para todos los días; los ceros conocidos son válidos y los días ausentes no se imputan. El filtro de periodo afecta a la vista descriptiva; los modelos utilizan su ventana hasta el corte.
 
-La política base usa un plazo de entrega de 3 días, revisión cada 7 días y seguridad de 2 días de venta estimada. Son parámetros del ejercicio y pueden modificarse:
+La política base usa un plazo de entrega de 3 días, revisión cada 7 días y seguridad de 2 días de venta estimada. Podemos modificar estos parámetros desde el panel:
 
 1. Stock de seguridad = venta diaria estimada × días de seguridad.
 2. Punto de reorden = venta diaria estimada × plazo de entrega + stock de seguridad.

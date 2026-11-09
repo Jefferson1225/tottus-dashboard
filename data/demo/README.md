@@ -1,4 +1,4 @@
-# Datos simulados para fines académicos
+# Datos simulados
 
 Estos archivos no representan operaciones reales de Tottus.
 

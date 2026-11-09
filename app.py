@@ -1,5 +1,6 @@
 """Dashboard de inventario, demanda y soporte a la reposición."""
 
+from base64 import b64encode
 from pathlib import Path
 
 import pandas as pd
@@ -54,6 +55,8 @@ def tabla_productos(tabla, clave):
 
 def main():
     st.set_page_config(page_title='Tottus | Inventario y reposición', page_icon='🟢', layout='wide')
+    logo_svg = b64encode((RAIZ / 'assets' / 'tottus.svg').read_bytes()).decode('ascii')
+    logo = f'<img class="tottus-logo" src="data:image/svg+xml;base64,{logo_svg}" alt="Tottus">'
     st.markdown('''
     <style>
       .block-container {padding-top: 2rem; padding-bottom: 2rem; max-width: 1540px;}
@@ -63,32 +66,33 @@ def main():
       [data-testid="stMetricValue"] {font-size: 2.2rem; font-weight: 650;}
       [data-testid="stMetricLabel"] {color: #63756a;}
       .hero {background: linear-gradient(110deg, #103d2c, #1d6141); color: white;
-             padding: 26px 30px; border-radius: 18px; margin-bottom: 20px;}
+             padding: 26px 30px; border-radius: 18px; margin-bottom: 20px;
+             display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px;}
       .hero .eyebrow {font-size: 11px; letter-spacing: .16em; color: #b6d5bd; font-weight: 700;}
       .hero h1 {font-size: 32px; color: white; margin: 8px 0; padding: 0; line-height: 1.25;}
       .hero p {color: #d8e6db; font-size: 14px; margin: 8px 0 0;}
-      .brand {font-size: 30px; font-weight: 800; letter-spacing: -.06em; color: #16834b;}
-      .brand-sub {font-size: 11px; letter-spacing: .12em; color: #7c8c80; margin-top: -8px; margin-bottom: 24px;}
+      .tottus-logo {display: block; width: 160px; max-width: 100%; height: auto;}
+      .hero .tottus-logo {box-sizing: content-box; padding: 14px 16px; background: white; border-radius: 12px;}
+      .brand-sub {font-size: 11px; letter-spacing: .12em; color: #63756a; margin: 10px 0 18px;}
       [data-testid="stTabs"] button {font-weight: 600;}
     </style>
     ''', unsafe_allow_html=True)
 
     with st.sidebar:
-        st.markdown('<div class="brand">tottus<span style="color:#a6bd42">.</span></div>'
-                    '<div class="brand-sub">SOPORTE DE DECISIONES</div>', unsafe_allow_html=True)
+        st.markdown(f'{logo}<div class="brand-sub">SOPORTE DE DECISIONES</div>', unsafe_allow_html=True)
         st.caption('INVENTARIO · ANÁLISIS · REPOSICIÓN')
-        fuente = st.radio('Fuente de información', ['Demo académica', 'Cargar mis CSV'], key='fuente')
+        fuente = st.radio('Fuente de información', ['Datos de ejemplo', 'Cargar mis CSV'], key='fuente')
 
-    st.markdown('''<div class="hero"><div class="eyebrow">ABASTECIMIENTO / PANEL DE CONTROL</div>
+    st.markdown(f'''<div class="hero"><div><div class="eyebrow">ABASTECIMIENTO / PANEL DE CONTROL</div>
         <h1>Inventario y reposición</h1>
         <p>Revisa tus ventas, identifica faltantes y prioriza los productos que necesitan atención.</p>
-        </div>''', unsafe_allow_html=True)
+        </div>{logo}</div>''', unsafe_allow_html=True)
 
     try:
-        if fuente == 'Demo académica':
+        if fuente == 'Datos de ejemplo':
             tablas = {tipo: cargar_csv(RAIZ / 'data' / 'demo' / f'{tipo}.csv', tipo)
                       for tipo in ['productos', 'ventas', 'inventario']}
-            st.caption('● DATOS SIMULADOS PARA FINES ACADÉMICOS · Sede de demostración · No representan operaciones reales de Tottus.')
+            st.caption('Fuente: datos simulados.')
         else:
             st.info('Carga los tres archivos del mismo ámbito de inventario. Formato: CSV UTF-8, separado por punto y coma (;).')
             columnas = st.columns(3)
@@ -100,7 +104,7 @@ def main():
                                 'ventas': 'fecha; producto_id; unidades_vendidas',
                                 'inventario': 'fecha_corte; producto_id; stock_actual; stock_minimo'}[tipo])
             if not all(archivo is not None for archivo in archivos.values()):
-                st.info('El panel estará disponible cuando cargues los tres CSV. Puedes volver a la demo desde el menú lateral.')
+                st.info('Carga los tres CSV para ver el panel o selecciona «Datos de ejemplo» en el menú lateral.')
                 return
             tablas = {tipo: cargar_csv(archivo, tipo) for tipo, archivo in archivos.items()}
             st.caption('ARCHIVOS CARGADOS POR EL USUARIO · La fuente y el ámbito corresponden a los archivos seleccionados.')
@@ -135,8 +139,6 @@ def main():
         st.caption('El periodo filtra las ventas. El stock corresponde únicamente al corte seleccionado.')
         ventana = st.selectbox('Ventana del modelo (días)', [14, 28, 42, 56], index=1, key='ventana_modelo')
         st.caption('Demanda, evaluación y segmentos usan el histórico hasta el corte de inventario, independientemente del periodo descriptivo.')
-        st.divider()
-        st.caption('PROTOTIPO ACADÉMICO\n\nPython · pandas · Streamlit · CSV')
 
     if len(periodo) != 2:
         st.info('Selecciona una fecha inicial y una fecha final para analizar las ventas.')
@@ -261,11 +263,11 @@ def main():
         st.write('Integramos ventas e inventario con una demanda de referencia, una política de reposición explicable y escenarios de demanda, plazo y stock. La vista general conserva sus alertas descriptivas por stock mínimo.')
         uno, dos = st.columns(2)
         with uno:
-            st.markdown('**Disponible en este avance**\n\n- Datos CSV, filtros e indicadores.\n- Demanda por media móvil y evaluación temporal.\n- Punto de reorden y sugerencia explicada.\n- Comparación de escenarios What-If.\n- Segmentación K-means de productos.\n- Descarga de tablas analíticas.')
+            st.markdown('**Funciones del dashboard**\n\n- Datos CSV, filtros e indicadores.\n- Demanda por media móvil y evaluación temporal.\n- Punto de reorden y sugerencia explicada.\n- Comparación de escenarios What-If.\n- Segmentación K-means de productos.\n- Descarga de tablas analíticas.')
         with dos:
             st.markdown('**Siguientes mejoras**\n\n- Calibrar con datos operativos reales.\n- Validar el horizonte completo de reposición.\n- Considerar pedidos en tránsito y reservas.\n- Incorporar restricciones de compra.\n- Evaluar clasificación supervisada cuando exista un histórico de quiebres etiquetado.')
         st.divider()
-        st.markdown('**Datos de demostración**')
+        st.markdown('**Datos de ejemplo**')
         st.write('16 productos de 4 categorías, 1 328 registros diarios del 01/08/2026 al 22/10/2026 y un corte de inventario al 22/10/2026. Una sola sede ficticia. El stock es una fotografía preparada: este dataset no simula un libro completo de entradas y salidas.')
         st.caption('Los días ausentes en un archivo cargado no se completan con ceros. La cifra de ventas suma únicamente registros disponibles; no mide demanda no atendida ni probabilidad de quiebre.')
         with st.expander('Ver columnas requeridas y descargar CSV de ejemplo'):
@@ -278,7 +280,7 @@ def main():
             st.caption('Fechas AAAA-MM-DD; cantidades enteras no negativas; códigos como texto. Cada combinación de producto y fecha debe ser única. No se corrigen datos inválidos silenciosamente.')
 
     st.divider()
-    st.caption('TOTTUS · CASO ACADÉMICO / SISTEMAS DE SOPORTE DE DECISIONES · Análisis de inventario y reposición')
+    st.caption('Inventario y reposición · Soporte de decisiones')
 
 
 if __name__ == '__main__':

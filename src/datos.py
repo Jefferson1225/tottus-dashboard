@@ -1,4 +1,4 @@
-"""Carga y validación de los tres archivos CSV del prototipo."""
+"""Carga y validación de los tres archivos CSV del dashboard."""
 
 import csv
 import io

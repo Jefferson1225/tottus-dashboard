@@ -1,4 +1,4 @@
-"""Genera datos académicos deterministas. No representa operaciones de Tottus."""
+"""Genera un conjunto reproducible de ventas e inventario simulados."""
 
 from pathlib import Path
 import random

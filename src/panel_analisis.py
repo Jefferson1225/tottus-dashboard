@@ -25,7 +25,7 @@ def numero(valor):
 def panel_reposicion(demanda, inventario, corte, ventana):
     st.subheader('De los datos a una propuesta de reposición')
     st.caption(f'Histórico: últimos {ventana} días hasta el {corte:%d/%m/%Y}. '
-               'Los parámetros son supuestos del ejercicio, comunes a los productos filtrados.')
+               'Los parámetros se aplican a todos los productos filtrados.')
     with st.container(border=True):
         st.markdown('**Política base**')
         a, b, c = st.columns(3)
@@ -149,7 +149,7 @@ def panel_evaluacion(productos, ventas, corte, ventana, grafico):
                        file_name=f'evaluacion_{corte:%Y%m%d}.csv', mime='text/csv')
     with st.expander('Método y límites de la evaluación'):
         st.write(f'La media móvil usa {ventana} observaciones diarias previas a cada objetivo. '
-                 'La ventana se fija desde el menú: esta comparación es exploratoria y no constituye una prueba final independiente. '
+                 'La ventana se fija desde el menú. La comparación utiliza el histórico seleccionado y no incluye una validación externa. '
                  'Los dos métodos se comparan sobre exactamente los mismos productos y días, sin mezclar fechas aleatoriamente. '
                  'El error a un día no valida automáticamente el horizonte de reposición de varios días. '
                  'Las ventas pueden subestimar la demanda cuando no había stock; no se dispone de demanda perdida.')
