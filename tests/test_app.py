@@ -13,12 +13,12 @@ class DashboardTests(unittest.TestCase):
         app = AppTest.from_file(str(APP), default_timeout=30).run()
         self.assertFalse(app.exception)
         self.assertEqual(app.metric[0].value, '16')
-        self.assertEqual(app.metric[2].value, '3')
-        self.assertEqual(app.metric[3].value, '6')
+        self.assertEqual(app.metric[2].value, '1')
+        self.assertEqual(app.metric[3].value, '8')
         app.multiselect(key='categorias').set_value(['Bebidas']).run()
         self.assertFalse(app.exception)
         self.assertEqual(app.metric[0].value, '4')
-        self.assertEqual(app.metric[2].value, '1')
+        self.assertEqual(app.metric[2].value, '0')
         self.assertEqual(app.metric[3].value, '1')
 
     def test_catalogo_sin_seleccion_y_carga_pendiente(self):

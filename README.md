@@ -16,10 +16,11 @@ Integramos el análisis de ventas e inventario con una política de reposición:
 - Carga y validación de archivos CSV.
 - Descarga del reporte de inventario.
 - Demanda de referencia mediante media móvil sobre un histórico diario completo.
-- Evaluación temporal frente a una referencia semanal, con MAE, RMSE y WAPE.
+- Evaluación temporal de ventas acumuladas a 1, 3, 7 o 14 días con MAE, RMSE y WAPE.
 - Punto de reorden, cobertura, prioridad de atención y cantidad sugerida explicada.
 - Comparación What-If de demanda, plazo de entrega y stock.
-- Segmentación K-means de productos por venta diaria y variabilidad.
+- Segmentación por venta diaria y variabilidad con K-means, K-medoids y Ward.
+- Alertas para el próximo cierre con CART, Random Forest y SVM. Podemos ajustar el umbral y comparar los quiebres detectados y omitidos.
 
 La prioridad indica el orden de atención según el stock disponible y la demanda estimada; no expresa una probabilidad de quiebre.
 
@@ -72,9 +73,9 @@ Incluimos un conjunto de datos para ejecutar el dashboard desde el primer inicio
 | Corte de inventario | 22/10/2026 |
 | Ámbito | Una sede ficticia de demostración |
 
-Los archivos de [`data/demo`](data/demo) contienen datos simulados. El stock corresponde a un corte de inventario y no se reconstruye a partir de un libro de entradas y salidas.
+Los archivos de [`data/demo`](data/demo) contienen datos simulados. Las ventas atendidas, el saldo diario y el corte de inventario proceden de la misma simulación.
 
-En la demo hay 3 productos sin stock y 6 bajo el mínimo. Los productos sin stock también están incluidos en el segundo indicador, por lo que ambos conteos no deben sumarse.
+En el corte de ejemplo hay 1 producto sin stock y 8 bajo el mínimo. El producto sin stock también está incluido en el segundo indicador, por lo que ambos conteos no deben sumarse.
 
 Para regenerar los mismos datos en Windows:
 
@@ -82,7 +83,7 @@ Para regenerar los mismos datos en Windows:
 .\.venv\Scripts\python.exe scripts/generar_demo.py
 ```
 
-El script utiliza una semilla fija y reemplaza únicamente los tres CSV de demostración.
+El script utiliza semillas fijas y reemplaza los cuatro CSV de ejemplo. `historial_stock.csv` conserva las ventas atendidas y el stock al cierre de cada día para el panel de alertas.
 
 ## Carga de archivos CSV
 
@@ -102,6 +103,8 @@ El periodo seleccionado filtra las ventas; el stock corresponde a la fecha de co
 
 El [diccionario de datos](docs/diccionario-datos.md) detalla los campos y las reglas utilizadas.
 
+Para calcular **Alertas de quiebre** con archivos propios, carga también `historial_stock.csv` desde esa pestaña. Este archivo es opcional para el resto del dashboard. Debe contener el stock al cierre y las ventas de cada producto por día.
+
 ## Estructura del proyecto
 
 ```text
@@ -114,6 +117,8 @@ src/
   reposicion.py             Política de reposición y escenarios.
   segmentacion.py           Agrupamiento K-means y perfiles.
   panel_analisis.py          Paneles de análisis y comparación.
+  quiebres.py                Variables, clasificadores y evaluación por fecha.
+  panel_quiebres.py          Alertas, curvas y matriz de confusión.
 data/demo/                  Datos de demostración.
 scripts/generar_demo.py     Generación reproducible de los CSV.
 tests/                      Pruebas de datos, indicadores e interfaz.
@@ -152,15 +157,11 @@ Redondeamos hacia arriba seguridad, reorden y objetivo. No se calculan cantidade
 
 La prioridad **alta** indica que el stock no supera las ventas estimadas durante el plazo. La **media** indica que se alcanza el punto de reorden con su colchón de seguridad, y la **baja** que el stock supera ese punto. Si no hay ventas en toda la ventana, mostramos **Sin demanda reciente**, con cantidad cero bajo ese supuesto.
 
-## Evaluación y segmentación
+## Evaluación, segmentación y alertas
 
-Aplicamos los temas de segmentación y evaluación trabajados en clase:
-
-- **Evaluación temporal:** comparamos la media móvil con un ingenuo semanal que repite la venta de siete días antes. Evaluamos los últimos 14 días, prediciendo un día adelante en cada origen con datos estrictamente anteriores. Incorporamos cada observación cuando ya es conocida para predecir el día siguiente. Ambos métodos se comparan en los mismos productos y fechas.
-- **Métricas:** MAE y RMSE en unidades por producto-día; WAPE como error absoluto total dividido por la venta observada total. WAPE queda sin definir cuando el total observado es cero. Esta evaluación exploratoria de un día no valida automáticamente un horizonte de reposición de varios días.
-- **Segmentación:** estandarizamos venta diaria media y coeficiente de variación, y aplicamos K-means con semilla fija. Mostramos perfiles en la escala original y silueta cuando está definida. Los grupos son relativos a la selección actual y sirven para revisar diferencias entre productos.
-
-Los clasificadores supervisados de quiebres quedan para una etapa con eventos históricos etiquetados. Los estados definidos por reglas no se utilizan como si fueran resultados observados para entrenar un clasificador.
+- **Evaluación temporal:** comparamos la media móvil y una referencia semanal sobre 14 fechas de inicio por producto. El horizonte configurable acumula las ventas previstas y observadas. Cada estimación usa solo datos anteriores a su inicio. MAE y RMSE miden el error en unidades del horizonte; WAPE queda vacío si el total observado es cero.
+- **Segmentación:** comparamos K-means, K-medoids y Ward sobre las mismas variables estandarizadas. Mostramos perfiles en escala original, productos representativos y silueta. K-means incluye el análisis del codo; Ward muestra el dendrograma.
+- **Alertas:** entrenamos CART, Random Forest y SVM para anticipar stock cero en el siguiente cierre. Los bloques de evaluación se separan por fecha. El panel muestra precisión, recall, F1, ROC-AUC, AP y la matriz de confusión. El puntaje ordena la atención y es independiente de la cantidad sugerida de reposición.
 
 La [metodología del análisis](docs/metodologia-analisis.md) detalla supuestos, fórmulas, evaluación y relación con las sesiones de clase.
 
@@ -169,9 +170,9 @@ La [metodología del análisis](docs/metodologia-analisis.md) detalla supuestos,
 En las siguientes etapas trabajaremos en:
 
 1. Calibrar parámetros por producto con datos operativos.
-2. Validar pronósticos al horizonte completo de reposición y comparar estacionalidad.
+2. Contrastar el desempeño con más temporadas y horizontes de reposición.
 3. Incorporar pedidos en tránsito, reservas, lotes mínimos y restricciones de compra.
-4. Evaluar clasificación supervisada con eventos de quiebre realmente observados.
+4. Calibrar las alertas con históricos operativos y medir su costo de omisión.
 
 El proyecto funciona de manera local y no se conecta a sistemas internos de Tottus. La decisión final de reposición corresponde al responsable de abastecimiento.
 

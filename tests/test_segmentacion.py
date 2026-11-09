@@ -6,6 +6,16 @@ from src.segmentacion import segmentar_productos
 
 
 class SegmentacionTests(unittest.TestCase):
+    def test_medoid_es_un_producto_y_ward_conserva_todos(self):
+        demanda = pd.DataFrame({'producto_id': list('ABCD'), 'nombre': list('ABCD'),
+                                'demanda_diaria': [1., 2., 20., 21.], 'cv': [.1, .1, .1, .1]})
+        for metodo in ['K-medoids', 'Jerárquico (Ward)']:
+            with self.subTest(metodo=metodo):
+                asignados, perfiles, _ = segmentar_productos(demanda, 2, metodo)
+                self.assertEqual(perfiles['productos'].tolist(), [2, 2])
+                self.assertEqual(set(asignados['producto_id']), set('ABCD'))
+                self.assertEqual(sum(asignados['representante']), 2)
+
     def test_grupos_reproducibles_y_perfiles_en_escala_original(self):
         demanda = pd.DataFrame({'producto_id': ['01', '02', '03', '04', '05', '06'],
                                 'nombre': list('ABCDEF'), 'categoria': ['A'] * 6,

@@ -1,6 +1,6 @@
-# Metodología de demanda, reposición y segmentación
+# Metodología de demanda, reposición y alertas
 
-Desarrollamos este avance para relacionar el histórico de ventas con una política de inventario explicable. Los resultados utilizan datos simulados y no representan políticas verificadas de Tottus.
+Relacionamos el histórico de ventas con una política de reposición y con alertas de stock al cierre. La fuente se identifica en cada panel.
 
 ## Fecha de análisis y calidad del histórico
 
@@ -16,16 +16,16 @@ Las ventas observadas pueden ser inferiores a la demanda cuando hubo falta de st
 
 ## Evaluación temporal
 
-Los últimos 14 días hasta el corte constituyen una evaluación exploratoria. Exigimos una secuencia completa de `ventana + 14` días por producto, de modo que los dos métodos compartan muestra:
+Evaluamos 14 fechas de inicio por producto, con horizontes configurables de 1, 3, 7 o 14 días. El último horizonte termina en el corte. Exigimos `ventana + 14 + horizonte - 1` días consecutivos:
 
-- **Media móvil:** promedio de la ventana estrictamente anterior a cada día objetivo.
-- **Ingenuo semanal:** unidades observadas exactamente siete días antes del objetivo.
+- **Media móvil:** promedio de la ventana anterior al inicio, multiplicado por el horizonte.
+- **Ingenuo semanal:** repite los siete días anteriores al inicio hasta completar el horizonte.
 
-Avanzamos un origen por día e incorporamos únicamente las observaciones ya conocidas. No mezclamos fechas aleatoriamente ni entrenamos con el valor del día a predecir. Es un backtest secuencial de un paso; no una predicción simultánea de 14 días.
+Avanzamos un origen por día e incorporamos únicamente observaciones conocidas antes de cada inicio. Los horizontes pueden solaparse: cada fila compara su pronóstico acumulado con la venta acumulada correspondiente.
 
-Informamos MAE, RMSE y WAPE sobre pares producto-día. MAE = promedio de errores absolutos; RMSE = raíz del promedio de errores cuadrados; WAPE = 100 × suma de errores absolutos / suma de ventas reales. WAPE queda vacío si el denominador es cero. No mostramos un porcentaje de acierto para esta tarea numérica.
+Informamos MAE, RMSE y WAPE sobre pares producto-fecha de inicio. MAE = promedio de errores absolutos; RMSE = raíz del promedio de errores cuadrados; WAPE = 100 × suma de errores absolutos / suma de ventas reales. WAPE queda vacío si el denominador es cero.
 
-La ventana se puede ajustar. No seleccionamos el modelo automáticamente a partir del error de este periodo. El error a un día tampoco mide el desempeño al plazo completo de reposición.
+La ventana y el horizonte se pueden ajustar. La reposición sigue usando la media móvil; la comparación sirve para revisar su desempeño.
 
 ## Política de reposición
 
@@ -55,18 +55,22 @@ Recalculamos seguridad, punto de reorden, objetivo y cantidades con esos valores
 
 ## Segmentación de productos
 
-Aplicamos StandardScaler a venta diaria media y CV, seguidos de K-means con `random_state=42` y `n_init=10`. Exigimos tantos perfiles distintos como grupos solicitados. Los productos con histórico incompleto se excluyen y se informa su cantidad.
+Aplicamos StandardScaler a venta diaria media y CV. K-means usa centroides e incluye inercia para el método del codo. K-medoids usa productos como centros y reduce la suma de distancias mediante intercambios. Ward agrupa por el aumento de varianza dentro de los grupos y permite explorar las uniones en el dendrograma. Exigimos tantos perfiles distintos como grupos solicitados y excluimos los históricos incompletos.
 
 Los números de clúster no tienen significado comercial por sí solos. Ordenamos los perfiles por venta diaria media y mostramos los promedios sin estandarizar para interpretarlos. Los grupos son relativos al catálogo filtrado y pueden cambiar al modificar la selección o la ventana.
 
 La silueta resume separación y cohesión en las variables estandarizadas, entre -1 y 1. Solo se calcula con al menos dos grupos y más observaciones que grupos. No mide exactitud predictiva ni garantiza un número óptimo de segmentos.
 
-## Relación con las clases
+## Clasificación de quiebres al cierre
 
-- Sesión 09: escalado, K-means y perfilamiento, adaptados de clientes a productos sin introducir datos personales.
-- Sesión 11: errores de regresión y validación temporal sin información futura.
-- Sesión 10: clasificación supervisada como línea futura, condicionada a disponer de un histórico de quiebres etiquetado. No generamos etiquetas a partir de las reglas para luego afirmar que un clasificador predice quiebres reales.
+Las variables describen lo que se sabe al cierre: stock disponible, ventas del día, media de ventas y días sin stock en la última semana, y día de semana. La etiqueta procede del stock del cierre siguiente. Stock cero al cierre no mide cuánto duró el quiebre ni cuánta demanda quedó sin atender.
 
-Las consignas y ejemplos del material de clase son referencias de aprendizaje. No forman un conjunto adicional de funcionalidades obligatorias del proyecto.
+Comparamos un árbol CART de profundidad limitada, Random Forest y SVM con kernel RBF. Los modelos ponderan las clases para que el entrenamiento no dependa solo de la más frecuente. SVM ajusta su escalado dentro de cada bloque.
 
-Referencias técnicas: [K-means](https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html), [StandardScaler](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.StandardScaler.html), [MAE](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.mean_absolute_error.html), [RMSE](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.root_mean_squared_error.html) y [silueta](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.silhouette_score.html).
+Evaluamos tres bloques de siete días por fecha con entrenamiento expansivo. Antes de cada bloque excluimos los registros cuya etiqueta aún no estaría disponible antes de la primera fecha evaluada. Las métricas y curvas usan las mismas observaciones para los tres modelos. Luego ajustamos cada modelo con las etiquetas disponibles hasta el corte para ordenar la revisión del día siguiente.
+
+El umbral modifica precisión, recall, F1 y la matriz de confusión. La curva precisión–recall se compara con la frecuencia de quiebres; AP resume la precisión a distintos niveles de recall. ROC-AUC y AP no dependen del umbral mostrado. Las salidas de los clasificadores no se presentan como probabilidades calibradas.
+
+Los datos de ejemplo comparten la misma simulación de ventas e inventario. Con archivos propios, comprobamos que el historial concuerde con los otros archivos donde coinciden producto y fecha. La clasificación no altera las cantidades de reposición ni genera pedidos.
+
+Referencias técnicas: [K-means](https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html), [silueta](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.silhouette_score.html), [validación por fecha](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.TimeSeriesSplit.html) y [métricas de evaluación](https://scikit-learn.org/stable/modules/model_evaluation.html).

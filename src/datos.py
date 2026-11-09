@@ -28,6 +28,10 @@ ESQUEMAS = {
         'clave': ['fecha_corte', 'producto_id'],
         'numeros': ['stock_actual', 'stock_minimo'], 'fecha': 'fecha_corte',
     },
+    'historial_stock': {
+        'columnas': ['fecha', 'producto_id', 'unidades_vendidas', 'stock_cierre'],
+        'clave': ['fecha', 'producto_id'], 'numeros': ['unidades_vendidas', 'stock_cierre'], 'fecha': 'fecha',
+    },
 }
 
 
@@ -103,3 +107,19 @@ def validar_relaciones(productos, ventas, inventario):
         if ajenos:
             muestra = ', '.join(sorted(ajenos)[:5])
             raise ErrorDatos(f'{nombre}.csv: productos que no existen en el catálogo: {muestra}.')
+
+
+def validar_historial(historial, productos, ventas, inventario):
+    """Comprueba que las observaciones coincidentes se refieran al mismo inventario."""
+    if not historial['producto_id'].isin(productos['producto_id']).all():
+        raise ErrorDatos('El historial contiene códigos que no están en el catálogo.')
+    llaves = ['fecha', 'producto_id']
+    cortes = inventario.rename(columns={'fecha_corte': 'fecha'})
+    saldos = historial.merge(cortes[[*llaves, 'stock_actual']], on=llaves, validate='one_to_one')
+    diferencias = saldos['stock_cierre'].ne(saldos['stock_actual']).sum()
+    if diferencias:
+        raise ErrorDatos(f'El stock al cierre no coincide con inventario.csv en {diferencias} producto-fecha. Revisa el corte y la sede.')
+    cantidades = historial.merge(ventas, on=llaves, suffixes=('_historial', '_ventas'), validate='one_to_one')
+    diferencias = cantidades['unidades_vendidas_historial'].ne(cantidades['unidades_vendidas_ventas']).sum()
+    if diferencias:
+        raise ErrorDatos(f'Las ventas diarias no coinciden con ventas.csv en {diferencias} producto-fecha. Revisa la fuente y la sede.')

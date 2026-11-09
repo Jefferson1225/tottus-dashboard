@@ -31,8 +31,8 @@ def estimar_demanda(productos, ventas, corte, ventana=28):
                                         'cv', 'dias_observados', 'historial'])
 
 
-def evaluar_demanda(productos, ventas, corte, ventana=28, dias_prueba=14):
-    """Backtest de un día adelante; cada origen usa solo el pasado disponible.
+def evaluar_demanda(productos, ventas, corte, ventana=28, dias_prueba=14, horizonte=1):
+    """Evalúa ventas acumuladas; cada origen usa solo el pasado disponible.
 
     Ambos métodos se comparan sobre los mismos productos y fechas.
     No ajusta hiperparámetros ni elige un ganador para producción.
@@ -41,18 +41,22 @@ def evaluar_demanda(productos, ventas, corte, ventana=28, dias_prueba=14):
         raise ValueError('La ventana debe ser un entero entre 7 y 365 días.')
     if not isinstance(dias_prueba, int) or not 1 <= dias_prueba <= 90:
         raise ValueError('El periodo de evaluación debe estar entre 1 y 90 días.')
+    if not isinstance(horizonte, int) or not 1 <= horizonte <= 30:
+        raise ValueError('El horizonte debe estar entre 1 y 30 días.')
     registros, excluidos = [], []
     for codigo in productos['producto_id']:
-        serie = _serie(ventas, codigo, corte, ventana + dias_prueba)
+        serie = _serie(ventas, codigo, corte, ventana + dias_prueba + horizonte - 1)
         if serie.isna().any():
             excluidos.append({'producto_id': codigo, 'motivo': 'Histórico diario incompleto para evaluar ambos métodos'})
             continue
-        for posicion in range(ventana, len(serie)):
-            media = float(serie.iloc[posicion - ventana:posicion].mean())
-            semanal = float(serie.iloc[posicion - 7])
+        for posicion in range(ventana, ventana + dias_prueba):
+            media = float(serie.iloc[posicion - ventana:posicion].mean()) * horizonte
+            semana = serie.iloc[posicion - 7:posicion].to_numpy()
+            semanal = float(np.resize(semana, horizonte).sum())
+            real = float(serie.iloc[posicion:posicion + horizonte].sum())
             for metodo, estimado in [('Media móvil', media), ('Ingenuo semanal', semanal)]:
                 registros.append({'producto_id': codigo, 'fecha': serie.index[posicion],
-                                  'metodo': metodo, 'real': float(serie.iloc[posicion]), 'estimado': estimado})
+                                  'metodo': metodo, 'real': real, 'estimado': estimado})
 
     detalle = pd.DataFrame(registros, columns=['producto_id', 'fecha', 'metodo', 'real', 'estimado'])
     filas = []

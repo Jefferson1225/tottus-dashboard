@@ -6,6 +6,16 @@ from src.demanda import estimar_demanda, evaluar_demanda
 
 
 class DemandaTests(unittest.TestCase):
+    def test_horizonte_acumula_observaciones_sin_ajustar_al_futuro(self):
+        fechas = pd.date_range('2026-10-01', periods=17)
+        ventas = pd.DataFrame({'producto_id': 'A', 'fecha': fechas,
+                               'unidades_vendidas': [2] * 7 + [100] * 10})
+        _, detalle, _ = evaluar_demanda(pd.DataFrame({'producto_id': ['A']}),
+                                       ventas, fechas[-1], 7, 1, horizonte=10)
+        self.assertEqual(detalle['real'].tolist(), [1000., 1000.])
+        self.assertEqual(detalle['estimado'].tolist(), [20., 20.])
+        self.assertEqual(detalle['fecha'].tolist(), [fechas[7]] * 2)
+
     def setUp(self):
         self.productos = pd.DataFrame({'producto_id': ['001', '002'],
                                       'nombre': ['Arroz', 'Agua'], 'categoria': ['A', 'B']})

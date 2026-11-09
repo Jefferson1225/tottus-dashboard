@@ -10,6 +10,7 @@ from src.datos import ErrorDatos, cargar_csv, validar_relaciones
 from src.indicadores import indicadores, preparar_resumen
 from src.demanda import estimar_demanda
 from src.panel_analisis import panel_reposicion, panel_evaluacion, panel_segmentacion
+from src.panel_quiebres import panel_quiebres
 
 
 RAIZ = Path(__file__).resolve().parent
@@ -168,9 +169,9 @@ def main():
     if sin_ventas:
         st.caption(f'{sin_ventas} producto(s) sin registros de ventas en el periodo; no se interpretan automáticamente como cero ventas.')
 
-    general, detalle, reposicion, evaluacion, segmentos, alcance = st.tabs([
+    general, detalle, reposicion, quiebres, evaluacion, segmentos, alcance = st.tabs([
         'Vista general', 'Detalle de inventario', 'Reposición y escenarios',
-        'Evaluación de demanda', 'Segmentación', 'Datos y alcance'])
+        'Alertas de quiebre', 'Evaluación de demanda', 'Segmentación', 'Datos y alcance'])
     ventas_filtradas = ventas[ventas['producto_id'].isin(catalogo['producto_id']) &
                               ventas['fecha'].between(pd.Timestamp(inicio), pd.Timestamp(fin))]
     with general:
@@ -253,6 +254,9 @@ def main():
     demanda = estimar_demanda(catalogo, ventas, corte, ventana)
     with reposicion:
         panel_reposicion(demanda, inventario, corte, ventana)
+    with quiebres:
+        panel_quiebres(productos, catalogo, ventas, inventario, corte, fuente == 'Datos de ejemplo',
+                       RAIZ / 'data' / 'demo' / 'historial_stock.csv', grafico)
     with evaluacion:
         panel_evaluacion(catalogo, ventas, corte, ventana, grafico)
     with segmentos:
@@ -263,12 +267,12 @@ def main():
         st.write('Integramos ventas e inventario con una demanda de referencia, una política de reposición explicable y escenarios de demanda, plazo y stock. La vista general conserva sus alertas descriptivas por stock mínimo.')
         uno, dos = st.columns(2)
         with uno:
-            st.markdown('**Funciones del dashboard**\n\n- Datos CSV, filtros e indicadores.\n- Demanda por media móvil y evaluación temporal.\n- Punto de reorden y sugerencia explicada.\n- Comparación de escenarios What-If.\n- Segmentación K-means de productos.\n- Descarga de tablas analíticas.')
+            st.markdown('**Funciones del dashboard**\n\n- Datos CSV, filtros e indicadores.\n- Evaluación de demanda por horizonte.\n- Punto de reorden y escenarios What-If.\n- Alertas de quiebre con tres clasificadores.\n- Segmentación con K-means, K-medoids y Ward.\n- Descarga de tablas analíticas.')
         with dos:
-            st.markdown('**Siguientes mejoras**\n\n- Calibrar con datos operativos reales.\n- Validar el horizonte completo de reposición.\n- Considerar pedidos en tránsito y reservas.\n- Incorporar restricciones de compra.\n- Evaluar clasificación supervisada cuando exista un histórico de quiebres etiquetado.')
+            st.markdown('**Alcance del análisis**\n\n- La reposición usa la media móvil y los parámetros de la política.\n- Las alertas estiman stock cero al siguiente cierre.\n- Los escenarios no modifican el inventario.\n- Los pedidos en tránsito y las reservas se gestionan fuera del panel.')
         st.divider()
         st.markdown('**Datos de ejemplo**')
-        st.write('16 productos de 4 categorías, 1 328 registros diarios del 01/08/2026 al 22/10/2026 y un corte de inventario al 22/10/2026. Una sola sede ficticia. El stock es una fotografía preparada: este dataset no simula un libro completo de entradas y salidas.')
+        st.write('16 productos de 4 categorías, 1 328 registros diarios del 01/08/2026 al 22/10/2026 y un corte de inventario al 22/10/2026. Las ventas y el stock al cierre proceden de la misma simulación para una sede.')
         st.caption('Los días ausentes en un archivo cargado no se completan con ceros. La cifra de ventas suma únicamente registros disponibles; no mide demanda no atendida ni probabilidad de quiebre.')
         with st.expander('Ver columnas requeridas y descargar CSV de ejemplo'):
             for tipo, tabla in tablas.items():
