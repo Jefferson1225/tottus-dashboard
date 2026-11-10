@@ -5,20 +5,23 @@ import pandas as pd
 from sklearn.metrics import mean_absolute_error, root_mean_squared_error
 
 
-def _serie(ventas, codigo, corte, dias):
+def _series(ventas, codigos, corte, dias):
     corte = pd.Timestamp(corte).normalize()
     indice = pd.date_range(end=corte, periods=dias, freq='D')
-    registros = ventas.loc[(ventas['producto_id'] == codigo) & ventas['fecha'].isin(indice)]
-    return registros.set_index('fecha')['unidades_vendidas'].reindex(indice).astype(float)
+    registros = ventas.loc[ventas['fecha'].isin(indice) & ventas['producto_id'].isin(codigos)].set_index('fecha')
+    grupos = {codigo: serie.reindex(indice).astype(float) for codigo, serie
+              in registros.groupby('producto_id', sort=False)['unidades_vendidas']}
+    return grupos, pd.Series(index=indice, dtype=float)
 
 
 def estimar_demanda(productos, ventas, corte, ventana=28):
     """Exige una ventana diaria completa; los huecos permanecen desconocidos."""
     if not isinstance(ventana, int) or not 7 <= ventana <= 365:
         raise ValueError('La ventana debe ser un entero entre 7 y 365 días.')
+    series, vacia = _series(ventas, productos['producto_id'], corte, ventana)
     filas = []
     for producto in productos.to_dict('records'):
-        serie = _serie(ventas, producto['producto_id'], corte, ventana)
+        serie = series.get(producto['producto_id'], vacia)
         dias = int(serie.notna().sum())
         completo = dias == ventana
         media = float(serie.mean()) if completo else np.nan
@@ -43,9 +46,10 @@ def evaluar_demanda(productos, ventas, corte, ventana=28, dias_prueba=14, horizo
         raise ValueError('El periodo de evaluación debe estar entre 1 y 90 días.')
     if not isinstance(horizonte, int) or not 1 <= horizonte <= 30:
         raise ValueError('El horizonte debe estar entre 1 y 30 días.')
+    series, vacia = _series(ventas, productos['producto_id'], corte, ventana + dias_prueba + horizonte - 1)
     registros, excluidos = [], []
     for codigo in productos['producto_id']:
-        serie = _serie(ventas, codigo, corte, ventana + dias_prueba + horizonte - 1)
+        serie = series.get(codigo, vacia)
         if serie.isna().any():
             excluidos.append({'producto_id': codigo, 'motivo': 'Histórico diario incompleto para evaluar ambos métodos'})
             continue

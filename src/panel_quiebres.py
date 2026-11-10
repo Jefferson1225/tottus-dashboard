@@ -7,6 +7,8 @@ from sklearn.metrics import precision_recall_curve, roc_curve
 from src.datos import ErrorDatos, cargar_csv, validar_historial
 from src.quiebres import evaluar_quiebres, medir_alertas
 
+DIAS_MODELO = 84
+
 
 @st.cache_data(max_entries=8, show_spinner=False)
 def _evaluar(historial, corte):
@@ -16,6 +18,7 @@ def _evaluar(historial, corte):
 def panel_quiebres(productos, seleccion, ventas, inventario, corte, ejemplo, archivo_ejemplo, grafico):
     st.subheader('Alertas para el próximo cierre')
     st.caption('El objetivo es anticipar qué productos terminarán el día siguiente con stock cero.')
+    st.caption(f'Los modelos usan hasta {DIAS_MODELO} días de historial hasta el corte seleccionado.')
     if ejemplo:
         origen = archivo_ejemplo
         st.caption('Fuente: historial simulado de ventas y stock al cierre, conciliado con el inventario general.')
@@ -30,9 +33,11 @@ def panel_quiebres(productos, seleccion, ventas, inventario, corte, ejemplo, arc
     try:
         historial = cargar_csv(origen, 'historial_stock')
         historial = historial[historial['fecha'].le(pd.Timestamp(corte))]
-        if len(historial) > 20000:
-            raise ErrorDatos('Para comparar los tres modelos, usa hasta 20 000 registros anteriores al corte.')
         validar_historial(historial, productos, ventas, inventario)
+        inicio = pd.Timestamp(corte) - pd.Timedelta(days=DIAS_MODELO - 1)
+        historial = historial[historial['fecha'].ge(inicio)]
+        if len(historial) > 20000:
+            raise ErrorDatos(f'Para comparar los tres modelos, usa hasta 20 000 registros dentro de los últimos {DIAS_MODELO} días del corte.')
         with st.spinner('Evaluando los modelos por fecha…'):
             evaluados, actuales, bloques = _evaluar(historial, corte)
     except (ErrorDatos, ValueError) as error:

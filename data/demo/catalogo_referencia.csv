@@ -1,0 +1,151 @@
+producto_id;nombre;categoria;familia;marca;fuente_url;fecha_consulta;demanda_base_simulada
+119580635;Aceite Vegetal Primor Clásico Botella 1.8 L;Abarrotes;Aceites;PRIMOR;https://www.tottus.com.pe/tottus-pe/articulo/119580635/aceite-vegetal-primor-clasico-botella-1-8-l;2026-11-10;17
+113706444;Aceite Vegetal Primor Clásico Botella 900 mL;Abarrotes;Aceites;PRIMOR;https://www.tottus.com.pe/tottus-pe/articulo/113706444/aceite-vegetal-primor-clasico-botella-900-ml;2026-11-10;33
+113706602;Aceite Vegetal Primor Premium Botella 900 mL;Abarrotes;Aceites;PRIMOR;https://www.tottus.com.pe/tottus-pe/articulo/113706602/aceite-vegetal-primor-premium-botella-900-ml;2026-11-10;30
+115267788;Aceite Vegetal Soya Sao Botella 900 mL;Abarrotes;Aceites;SAO;https://www.tottus.com.pe/tottus-pe/articulo/115267788/aceite-vegetal-soya-sao-botella-900-ml;2026-11-10;11
+115776531;Aceite Vegetal Tottus Botella 900 mL;Abarrotes;Aceites;TOTTUS;https://www.tottus.com.pe/tottus-pe/articulo/115776531/aceite-vegetal-tottus-botella-900-ml;2026-11-10;28
+135790681;Aceite Vegetal del Cielo Botella 900 mL;Abarrotes;Aceites;DEL CIELO;https://www.tottus.com.pe/tottus-pe/articulo/135790681/aceite-vegetal-del-cielo-botella-900-ml;2026-11-10;13
+113707306;Arroz Extra Costeño Bolsa 5 Kg;Abarrotes;Arroz;COSTENO;https://www.tottus.com.pe/tottus-pe/articulo/113707306/arroz-extra-costeno-bolsa-5-kg;2026-11-10;29
+113707117;Arroz Extra Costeño Bolsa 750 g;Abarrotes;Arroz;COSTENO;https://www.tottus.com.pe/tottus-pe/articulo/113707117/arroz-extra-costeno-bolsa-750-g;2026-11-10;25
+113706394;Arroz Extra Gran Chalán Bolsa 5 Kg;Abarrotes;Arroz;GRAN CHALAN;https://www.tottus.com.pe/tottus-pe/articulo/113706394/arroz-extra-gran-chalan-bolsa-5-kg;2026-11-10;19
+113706244;Arroz Extra Paisana Bolsa 1 Kg;Abarrotes;Arroz;PAISANA;https://www.tottus.com.pe/tottus-pe/articulo/113706244/arroz-extra-paisana-bolsa-1-kg;2026-11-10;24
+113705624;Arroz Extra Paisana Bolsa 5 Kg;Abarrotes;Arroz;PAISANA;https://www.tottus.com.pe/tottus-pe/articulo/113705624/arroz-extra-paisana-bolsa-5-kg;2026-11-10;16
+113708338;Arroz Extra Tottus Bolsa 10 Kg;Abarrotes;Arroz;TOTTUS;https://www.tottus.com.pe/tottus-pe/articulo/113708338/arroz-extra-tottus-bolsa-10-kg;2026-11-10;12
+113706045;Arroz Extra Tottus Bolsa 5 Kg;Abarrotes;Arroz;TOTTUS;https://www.tottus.com.pe/tottus-pe/articulo/113706045/arroz-extra-tottus-bolsa-5-kg;2026-11-10;31
+113705607;Arroz Extra Tottus Bolsa 750 g;Abarrotes;Arroz;TOTTUS;https://www.tottus.com.pe/tottus-pe/articulo/113705607/arroz-extra-tottus-bolsa-750-g;2026-11-10;34
+113706692;Arroz Integral Paisana Bolsa 1 Kg;Abarrotes;Arroz;PAISANA;https://www.tottus.com.pe/tottus-pe/articulo/113706692/arroz-integral-paisana-bolsa-1kg;2026-11-10;7
+113706127;Arroz Superior Tottus Bolsa 5 Kg;Abarrotes;Arroz;TOTTUS;https://www.tottus.com.pe/tottus-pe/articulo/113706127/arroz-superior-tottus-bolsa-5-kg;2026-11-10;23
+139815379;Filete de Atún Campomar en Aceite Lata 150 g;Abarrotes;Conservas;CAMPOMAR;https://www.tottus.com.pe/tottus-pe/articulo/139815379/filete-de-atun-campomar-en-aceite-lata-150-g;2026-11-10;13
+116902429;Filete de Atún Florida en Aceite Vegetal Lata 140 g;Abarrotes;Conservas;FLORIDA;https://www.tottus.com.pe/tottus-pe/articulo/116902429/filete-de-atun-florida-en-aceite-vegetal-lata-140-g;2026-11-10;22
+115473747;Filete de Atún Primor Lata 140 g;Abarrotes;Conservas;PRIMOR;https://www.tottus.com.pe/tottus-pe/articulo/115473747/filete-de-atun-primor-lata-140-g;2026-11-10;18
+120622965;Filete de Atún Tottus en Aceite Lata 140 g;Abarrotes;Conservas;TOTTUS;https://www.tottus.com.pe/tottus-pe/articulo/120622965/filete-de-atun-tottus-en-aceite-lata-140-g;2026-11-10;20
+119041289;Filete de Atún en Agua Primor Lata 140g;Abarrotes;Conservas;PRIMOR;https://www.tottus.com.pe/tottus-pe/articulo/119041289/filete-de-atun-en-agua-primor-lata-140g;2026-11-10;9
+120623057;Trozos de Atún Tottus en Aceite Sixpack Lata 140 g;Abarrotes;Conservas;TOTTUS;https://www.tottus.com.pe/tottus-pe/articulo/120623057/trozos-de-atun-tottus-en-aceite-sixpack-lata-140-g;2026-11-10;16
+115878270;Trozos de Atún en Aceite Primor Lata 140 g;Abarrotes;Conservas;PRIMOR;https://www.tottus.com.pe/tottus-pe/articulo/115878270/trozos-de-atun-en-aceite-primor-lata-140-g;2026-11-10;14
+154453148;MayoPicante Alacena Doypack 200 g;Abarrotes;Mayonesa;ALACENA;https://www.tottus.com.pe/tottus-pe/articulo/154453148/mayopicante-alacena-doypack-200-g;2026-11-10;8
+145796749;Mayonesa Alacena Doypack 235 g;Abarrotes;Mayonesa;ALACENA;https://www.tottus.com.pe/tottus-pe/articulo/145796749/mayonesa-alacena-doypack-235-g;2026-11-10;19
+113712628;Mayonesa Alacena Doypack 475 g;Abarrotes;Mayonesa;ALACENA;https://www.tottus.com.pe/tottus-pe/articulo/113712628/mayonesa-alacena-doypack-475-g;2026-11-10;26
+116539348;Mayonesa Alacena Doypack 850 g;Abarrotes;Mayonesa;ALACENA;https://www.tottus.com.pe/tottus-pe/articulo/116539348/mayonesa-alacena-doypack-850-g;2026-11-10;15
+115845718;Mayonesa Hellmanns Real Botella 443 mL;Abarrotes;Mayonesa;HELLMANNS;https://www.tottus.com.pe/tottus-pe/articulo/115845718/mayonesa-hellmanns-real-botella-443-ml;2026-11-10;10
+116982230;Mayonesa Light AlaCena Doypack 400 g;Abarrotes;Mayonesa;ALACENA;https://www.tottus.com.pe/tottus-pe/articulo/116982230/mayonesa-light-alacena-doypack-400-g;2026-11-10;9
+144450306;Mayonesa Pollera D Gussto Doypack 250 g;Abarrotes;Mayonesa;DGUSSTO;https://www.tottus.com.pe/tottus-pe/articulo/144450306/mayonesa-pollera-d-gussto-doypack-250-g;2026-11-10;11
+152252605;Mayonesa Tottus Doypack 235 g;Abarrotes;Mayonesa;TOTTUS;https://www.tottus.com.pe/tottus-pe/articulo/152252605/mayonesa-tottus-doypack-235-g;2026-11-10;14
+113711720;Mayonesa Tottus Doypack 475 g;Abarrotes;Mayonesa;TOTTUS;https://www.tottus.com.pe/tottus-pe/articulo/113711720/mayonesa-tottus-doypack-475-g;2026-11-10;17
+113708733;Arveja Partida Tottus Menestra Bolsa 500 g;Abarrotes;Menestras y granos;TOTTUS;https://www.tottus.com.pe/tottus-pe/articulo/113708733/arveja-partida-tottus-menestra-bolsa-500-g;2026-11-10;11
+113706230;Frijol Canario Tottus Menestra Bolsa 500 g;Abarrotes;Menestras y granos;TOTTUS;https://www.tottus.com.pe/tottus-pe/articulo/113706230/frijolcanario-tottus-menestra-500-g;2026-11-10;16
+113706832;Frijol Castilla Tottus Menestra Bolsa 500 g;Abarrotes;Menestras y granos;TOTTUS;https://www.tottus.com.pe/tottus-pe/articulo/113706832/frijolcastilla-tottus-menestra-menestra-500-g;2026-11-10;11
+113706912;Frijol Negro Tottus Menestra Bolsa 500 g;Abarrotes;Menestras y granos;TOTTUS;https://www.tottus.com.pe/tottus-pe/articulo/113706912/frijol-negro-tottus-menestra-bolsa-500-g;2026-11-10;8
+113708319;Lenteja Bebé Menestra Tottus Bolsa 500 g;Abarrotes;Menestras y granos;TOTTUS;https://www.tottus.com.pe/tottus-pe/articulo/113708319/lenteja-bebe-menestra-tottus-bolsa-500g;2026-11-10;21
+113706824;Lenteja Tottus Menestra Bolsa 1 Kg;Abarrotes;Menestras y granos;TOTTUS;https://www.tottus.com.pe/tottus-pe/articulo/113706824/lenteja-tottus-menestra-bolsa-1-kg;2026-11-10;15
+113709037;Lenteja Tottus Menestra Bolsa 500 g;Abarrotes;Menestras y granos;TOTTUS;https://www.tottus.com.pe/tottus-pe/articulo/113709037/lenteja-tottus-menestra-bolsa-500-g;2026-11-10;22
+115844961;Quinua Tottus Menestra Bolsa 500 g;Abarrotes;Menestras y granos;TOTTUS;https://www.tottus.com.pe/tottus-pe/articulo/115844961/quinua-tottus-menestra-500-g;2026-11-10;14
+113712878;Salsa Roja Completa Don Vittorio Doypack 400 g;Abarrotes;Otras salsas;DON VITTORIO;https://www.tottus.com.pe/tottus-pe/articulo/113712878/salsa-roja-don-vittorio-400-g;2026-11-10;13
+113707310;Salsa Tomate Pomarola Clasica Bolsa 145 g;Abarrotes;Otras salsas;MOLITALIA;https://www.tottus.com.pe/tottus-pe/articulo/113707310/salsa-tomate-pomarola-clasica-molitalia-145g;2026-11-10;19
+113707254;Fideos Spaghetti Molitalia Bolsa 950 g;Abarrotes;Pastas;MOLITALIA;https://www.tottus.com.pe/tottus-pe/articulo/113707254/fideos-spaghetti-molitalia-bolsa-950-g;2026-11-10;27
+115807056;Spaguetti Don Vittorio Paquete 950 g;Abarrotes;Pastas;DON VITTORIO;https://www.tottus.com.pe/tottus-pe/articulo/115807056/spaguetti-don-vittorio-paquete-950-g;2026-11-10;31
+113708765;Tornillo Don Vittorio Paquete 500 g;Abarrotes;Pastas;DON VITTORIO;https://www.tottus.com.pe/tottus-pe/articulo/113708765/tornillo-don-vittorio-paquete-500-g;2026-11-10;23
+113707784;Sal de Mar Marina Emsal de Cocina Bolsa 1 Kg;Abarrotes;Sal y vinagre;MARINA;https://www.tottus.com.pe/tottus-pe/articulo/113707784/sal-de-mar-marina-emsal-de-cocina-bolsa-1-kg;2026-11-10;16
+113705699;Sal de Mar Marina Emsal de Mesa Bolsa 1 Kg;Abarrotes;Sal y vinagre;MARINA;https://www.tottus.com.pe/tottus-pe/articulo/113705699/sal-de-mar-marina-emsal-de-mesa-bolsa-1-kg;2026-11-10;18
+115807177;Vinagre Blanco Tottus Botella 1 L;Abarrotes;Sal y vinagre;TOTTUS;https://www.tottus.com.pe/tottus-pe/articulo/115807177/vinagre-blanco-tottus-botella-1-l;2026-11-10;8
+144746409;Agua Cielo Con Gas Sabor Maracuyá Botella 600 mL;Bebidas;Agua;CIELO;https://www.tottus.com.pe/tottus-pe/articulo/144746409/agua-cielo-con-gas-sabor-maracuya-botella-600-ml;2026-11-10;18
+113374841;Agua Cielo Sin Gas Bidón 7 L;Bebidas;Agua;CIELO;https://www.tottus.com.pe/tottus-pe/articulo/113374841/agua-cielo-sin-gas-bidon-7-l;2026-11-10;38
+113380024;Agua Cielo Sin Gas Botella 2.5 L;Bebidas;Agua;CIELO;https://www.tottus.com.pe/tottus-pe/articulo/113380024/agua-cielo-sin-gas-botella-2-5-l;2026-11-10;40
+113366759;Agua Cielo Sin Gas Sixpack Botella 625 mL;Bebidas;Agua;CIELO;https://www.tottus.com.pe/tottus-pe/articulo/113366759/agua-cielo-sin-gas-sixpack-botella-625-ml;2026-11-10;34
+113376637;Agua San Luis Con Gas Botella 625 mL;Bebidas;Agua;SAN LUIS;https://www.tottus.com.pe/tottus-pe/articulo/113376637/agua-san-luis-con-gas-botella-625-ml;2026-11-10;19
+113369124;Agua San Luis Sin Gas Botella 1 L;Bebidas;Agua;SAN LUIS;https://www.tottus.com.pe/tottus-pe/articulo/113369124/agua-san-luis-sin-gas-botella-1-l;2026-11-10;25
+152010566;Agua San Luis Sin Gas Botella 3 L;Bebidas;Agua;SAN LUIS;https://www.tottus.com.pe/tottus-pe/articulo/152010566/agua-san-luis-sin-gas-botella-3-l;2026-11-10;23
+113368318;Agua San Mateo Sin Gas Botella 2.5 L;Bebidas;Agua;SAN MATEO;https://www.tottus.com.pe/tottus-pe/articulo/113368318/agua-san-mateo-sin-gas-botella-2-5-l;2026-11-10;25
+113366430;Agua San Mateo con Gas Sixpack Botella 600 mL;Bebidas;Agua;SAN MATEO;https://www.tottus.com.pe/tottus-pe/articulo/113366430/agua-san-mateo-con-gas-sixpack-botella-600-ml;2026-11-10;15
+113365992;Agua San Mateo sin Gas Bidón 7 L;Bebidas;Agua;SAN MATEO;https://www.tottus.com.pe/tottus-pe/articulo/113365992/agua-san-mateo-sin-gas-bidon-7-l;2026-11-10;24
+113366534;Agua San Mateo sin Gas Sixpack Botella 600 mL;Bebidas;Agua;SAN MATEO;https://www.tottus.com.pe/tottus-pe/articulo/113366534/agua-san-mateo-sin-gas-sixpack-botella-600-ml;2026-11-10;27
+116978042;Agua Tottus Sin Gas Bidón 7 L;Bebidas;Agua;TOTTUS;https://www.tottus.com.pe/tottus-pe/articulo/116978042/agua-tottus-sin-gas-bidon-7-l;2026-11-10;27
+133063044;Agua Tottus Sin Gas Pack 15 Botellas 625 mL;Bebidas;Agua;TOTTUS;https://www.tottus.com.pe/tottus-pe/articulo/133063044/agua-tottus-sin-gas-pack-15-botellas-625-ml;2026-11-10;18
+113367981;Agua sin Gas San Carlos Pack 20 Botellas 500 mL;Bebidas;Agua;SAN CARLOS;https://www.tottus.com.pe/tottus-pe/articulo/113367981/agua-sin-gas-san-carlos-pack-20-botellas-500-ml;2026-11-10;10
+128148636;Arveja en Granos Congelado Tottus Bolsa 400 g;Congelados;Congelados salados;TOTTUS;https://www.tottus.com.pe/tottus-pe/articulo/128148636/arveja-granos-tottus-400-g;2026-11-10;12
+115812731;Hamburguesa de Pollo y Res La Casera San Fernando Empaque 910 g;Congelados;Congelados salados;SAN FERNANDO;https://www.tottus.com.pe/tottus-pe/articulo/115812731/hamburguesa-de-pollo-y-res-la-casera-san-fernando-empaque-910-g;2026-11-10;13
+128148651;Mix Arverja Choclo Zanahoria y Vainita Tottus Bolsa 400 g;Congelados;Congelados salados;TOTTUS;https://www.tottus.com.pe/tottus-pe/articulo/128148651/mix-arverja-choclo-zanahoria-y-vainita-tottus-bolsa-400-g;2026-11-10;10
+128148635;Mix Vegetales Congelados Primavera Tottus Bolsa 400 g;Congelados;Congelados salados;TOTTUS;https://www.tottus.com.pe/tottus-pe/articulo/128148635/mix-primavera-tottus-400-g;2026-11-10;12
+147179530;Nuggets Pollo San Fernando Bolsa 36 Und;Congelados;Congelados salados;SAN FERNANDO;https://www.tottus.com.pe/tottus-pe/articulo/147179530/nuggets-pollo-san-fernando-bolsa-36-und;2026-11-10;11
+153044064;Nuggets de Pechuga de Pollo Braedt Empaque 330 g;Congelados;Congelados salados;BRAEDT;https://www.tottus.com.pe/tottus-pe/articulo/153044064/nuggets-de-pechuga-de-pollo-braedt-empaque-330-g;2026-11-10;14
+124384444;Nuggets de Pollo Avinka Bolsa 15 Und;Congelados;Congelados salados;AVINKA;https://www.tottus.com.pe/tottus-pe/articulo/124384444/nuggets-de-pollo-avinka-bolsa-15-und;2026-11-10;12
+128940947;Nuggets de Pollo San Fernando 900 g (60 Un);Congelados;Congelados salados;SAN FERNANDO;https://www.tottus.com.pe/tottus-pe/articulo/128940947/nuggets-de-pollo-san-fernando-900-g-60-un;2026-11-10;16
+113706758;Papas Pre Fritas Rectas Congeladas Tottus Bolsa 1 Kg;Congelados;Congelados salados;TOTTUS;https://www.tottus.com.pe/tottus-pe/articulo/113706758/papas-pre-fritas-rectas-tottus;2026-11-10;19
+115462419;Fresa Entera Congelada El Frutero Bolsa 1 Kg;Congelados;Frutas congeladas;EL FRUTERO;https://www.tottus.com.pe/tottus-pe/articulo/115462419/fresa-entera-congelada-1-kg;2026-11-10;10
+124134439;Mix Fresa Papaya y Piña Congelada en Trozos Tottus Bolsa 1 Kg;Congelados;Frutas congeladas;TOTTUS;https://www.tottus.com.pe/tottus-pe/articulo/124134439/mix-fresa-papaya-y-pina-congelada-en-trozos-tottus-bolsa-1-kg;2026-11-10;9
+124134452;Piña Congelada en Trozos Tottus Bolsa 1 Kg;Congelados;Frutas congeladas;TOTTUS;https://www.tottus.com.pe/tottus-pe/articulo/124134452/pina-congelada-en-trozos-tottus-bolsa-1-kg;2026-11-10;8
+124134440;Pulpa de Fresa Congelada Tottus Empaque 500 g;Congelados;Frutas congeladas;TOTTUS;https://www.tottus.com.pe/tottus-pe/articulo/124134440/pulpa-de-fresa-congelada-500g-tottus;2026-11-10;10
+113707408;Crema Dental Colgate Luminous White Blanqueadora Caja 2 Und 75 mL;Cuidado personal;Higiene bucal;COLGATE;https://www.tottus.com.pe/tottus-pe/articulo/113707408/crema-dental-colgate-luminous-white-blanqueadora-caja-2-und-75-ml;2026-11-10;7
+113715476;Crema Dental Colgate Total Original Mint Prevención Activa Caja 3 Und;Cuidado personal;Higiene bucal;COLGATE;https://www.tottus.com.pe/tottus-pe/articulo/113715476/crema-dental-colgate-total-original-mint-prevencion-activa-caja-3-und;2026-11-10;11
+113714484;Crema Dental Colgate Triple Accion Caja 3 Und 100 ml;Cuidado personal;Higiene bucal;COLGATE;https://www.tottus.com.pe/tottus-pe/articulo/113714484/crema-dental-colgate-triple-accion-caja-3-und-100-ml;2026-11-10;16
+113712994;Pasta Dental Aquafresh Triple Protección Pack 3 Cajas 100 g;Cuidado personal;Higiene bucal;AQUAFRESH;https://www.tottus.com.pe/tottus-pe/articulo/113712994/pasta-dental-aquafresh-triple-proteccion-pack-3-cajas-100-g;2026-11-10;9
+115366449;Pasta Dental Dento Triple Acción Tripack Caja 80 g;Cuidado personal;Higiene bucal;DENTO;https://www.tottus.com.pe/tottus-pe/articulo/115366449/pasta-dental-dento-triple-accion-tripack-caja-80-g;2026-11-10;12
+115221306;Antitranspirante Aerosol Rexona Men V8 Empaque 2 Und;Cuidado personal;Higiene personal;REXONA;https://www.tottus.com.pe/tottus-pe/articulo/115221306/antitranspirante-aerosol-rexona-men-v8-empaque-2-und;2026-11-10;6
+113708126;Protectores Diarios Nosotras Normal Empaque 150 Und;Cuidado personal;Higiene personal;NOSOTRAS;https://www.tottus.com.pe/tottus-pe/articulo/113708126/protectores-diarios-nosotras-normal-empaque-150-und;2026-11-10;7
+114325247;Toallas Higiénicas Ladysoft Normal Tela Suave Empaque 60 Und;Cuidado personal;Higiene personal;LADYSOFT;https://www.tottus.com.pe/tottus-pe/articulo/114325247/toallas-higienicas-ladysoft-normal-tela-suave-empaque-60-und;2026-11-10;8
+143218017;Toallas Higiénicas Nosotras Alas Tela Gel Empaque 48 Und;Cuidado personal;Higiene personal;NOSOTRAS;https://www.tottus.com.pe/tottus-pe/articulo/143218017/toallas-higienicas-nosotras-alas-tela-gel-empaque-48-und;2026-11-10;12
+122324491;Toallas Higiénicas Nosotras Buenas Noches Empaque 30 Und;Cuidado personal;Higiene personal;NOSOTRAS;https://www.tottus.com.pe/tottus-pe/articulo/122324491/toallas-higienicas-nosotras-buenas-noches-empaque-30-und;2026-11-10;11
+138899920;Jabón Líquido Ballerina Avena y Almendra Doypack 750 mL;Cuidado personal;Jabón de tocador;BALLERINA;https://www.tottus.com.pe/tottus-pe/articulo/138899920/jabon-liquido-ballerina-avena-y-almendra-doypack-750-ml;2026-11-10;9
+114073501;Jabón de Tocador Dove Original Caja 3 Und;Cuidado personal;Jabón de tocador;DOVE;https://www.tottus.com.pe/tottus-pe/articulo/114073501/jabon-de-tocador-dove-original-caja-3-und;2026-11-10;16
+113708615;Jabón de Tocador Dove Original Empaque 6 Und;Cuidado personal;Jabón de tocador;DOVE;https://www.tottus.com.pe/tottus-pe/articulo/113708615/jabon-de-tocador-dove-original-empaque-6-und;2026-11-10;10
+113930245;Jabón de Tocador Tottus Aloe Vera Empaque 3 Und;Cuidado personal;Jabón de tocador;TOTTUS;https://www.tottus.com.pe/tottus-pe/articulo/113930245/jabon-de-tocador-tottus-aloe-vera-empaque-3-und;2026-11-10;11
+113707242;Jabón de Tocador Tottus Avena Miel Empaque 3 Und;Cuidado personal;Jabón de tocador;TOTTUS;https://www.tottus.com.pe/tottus-pe/articulo/113707242/jabon-de-tocador-tottus-avena-miel-empaque-3-und;2026-11-10;12
+120189866;Jabón en Barra Palmolive Avena y Azucar Empaque 3 Und 110 g;Cuidado personal;Jabón de tocador;PALMOLIVE;https://www.tottus.com.pe/tottus-pe/articulo/120189866/jabon-en-barra-palmolive-avena-y-azucar-empaque-3-und-110-g;2026-11-10;15
+113707383;Jabón en Barra Protex Avena Empaque 3 Und 110 g;Cuidado personal;Jabón de tocador;PROTEX;https://www.tottus.com.pe/tottus-pe/articulo/113707383/jabon-en-barra-protex-avena-empaque-3-und-110-g;2026-11-10;14
+113707691;Helado Donofrio Peziduri Chocochips Pote 2.2 L;Helados;Helado;DONOFRIO;https://www.tottus.com.pe/tottus-pe/articulo/113707691/helado-donofrio-peziduri-chocochips-pote-2-2-l;2026-11-10;8
+124755045;Helado Donofrio Peziduri Chocochips Pote 900 mL;Helados;Helado;DONOFRIO;https://www.tottus.com.pe/tottus-pe/articulo/124755045/helado-donofrio-peziduri-chocochips-pote-900-ml;2026-11-10;17
+124755051;Helado Donofrio Peziduri Chocolate Pote 900 mL;Helados;Helado;DONOFRIO;https://www.tottus.com.pe/tottus-pe/articulo/124755051/helado-donofrio-peziduri-chocolate-pote-900-ml;2026-11-10;14
+113713848;Helado Donofrio Peziduri Chocolúcuma Vainilla Pote 2.2 L;Helados;Helado;DONOFRIO;https://www.tottus.com.pe/tottus-pe/articulo/113713848/helado-donofrio-peziduri-chocolucuma-vainilla-pote-2-2-l;2026-11-10;9
+113706566;Helado Donofrio Peziduri Tricolor Pote 2.2 L;Helados;Helado;DONOFRIO;https://www.tottus.com.pe/tottus-pe/articulo/113706566/helado-donofrio-peziduri-tricolor-pote-2-2-l;2026-11-10;11
+124755041;Helado Donofrio Peziduri Tricolor Pote 900 mL;Helados;Helado;DONOFRIO;https://www.tottus.com.pe/tottus-pe/articulo/124755041/helado-donofrio-peziduri-tricolor-pote-900-ml;2026-11-10;19
+127702854;Helado Donofrio Princesa Chocolate Maní Pote 900 mL;Helados;Helado;DONOFRIO;https://www.tottus.com.pe/tottus-pe/articulo/127702854/helado-donofrio-princesa-chocolate-mani-pote-900-ml;2026-11-10;9
+113707585;Helado Donofrio Sublime Chocolate con Maní Pote 900 mL;Helados;Helado;DONOFRIO;https://www.tottus.com.pe/tottus-pe/articulo/113707585/helado-donofrio-sublime-chocolate-con-mani-pote-900-ml;2026-11-10;13
+130519765;Detergente en Polvo Bolívar Cuidado Total Bolsa 4 Kg;Limpieza;Lavado de ropa;BOLIVAR;https://www.tottus.com.pe/tottus-pe/articulo/130519765/detergente-en-polvo-bolivar-cuidado-total-bolsa-4-kg;2026-11-10;13
+142281540;Detergente en Polvo Marsella Lavanda y Rosas Bolsa 4 Kg;Limpieza;Lavado de ropa;MARSELLA;https://www.tottus.com.pe/tottus-pe/articulo/142281540/detergente-en-polvo-marsella-lavanda-y-rosas-bolsa-4-kg;2026-11-10;10
+135790741;Detergente en Polvo Opal Ultra Bolsa 4 Kg;Limpieza;Lavado de ropa;OPAL;https://www.tottus.com.pe/tottus-pe/articulo/135790741/detergente-en-polvo-opal-ultra-bolsa-4-kg;2026-11-10;12
+113714236;Detergente en Polvo Sapolio Floral Bolsa 4 Kg;Limpieza;Lavado de ropa;SAPOLIO;https://www.tottus.com.pe/tottus-pe/articulo/113714236/detergente-en-polvo-sapolio-floral-bolsa-4-kg;2026-11-10;10
+113707152;Jabón Líquido Skip Doypack 3 L;Limpieza;Lavado de ropa;SKIP;https://www.tottus.com.pe/tottus-pe/articulo/113707152/jabon-liquido-skip-doypack-3-l;2026-11-10;8
+132020969;Jabón de Lavar Bolívar Cuidado Total Empaque 380 g;Limpieza;Lavado de ropa;BOLIVAR;https://www.tottus.com.pe/tottus-pe/articulo/132020969/jabon-de-lavar-bolivar-cuidado-total-empaque-380-g;2026-11-10;15
+113712394;Suavizante Suavitel Fresca Primavera Doypack 2.3 L;Limpieza;Lavado de ropa;SUAVITEL;https://www.tottus.com.pe/tottus-pe/articulo/113712394/suavizante-suavitel-fresca-primavera-doypack-2-3-l;2026-11-10;13
+123560377;Lavavajilla Liquido Sapolio Lima Limón Botella 1250 mL;Limpieza;Limpieza de cocina y hogar;SAPOLIO;https://www.tottus.com.pe/tottus-pe/articulo/123560377/lavavajilla-liquido-sapolio-lima-limon-botella-1250-ml;2026-11-10;16
+113706297;Lavavajilla Líquido Antibacterial Tottus Limón Envase 1.2 L;Limpieza;Limpieza de cocina y hogar;TOTTUS;https://www.tottus.com.pe/tottus-pe/articulo/113706297/lavavajilla-liquido-antibacterial-tottus-limon-envase-1-2-l;2026-11-10;14
+113706554;Lavavajilla en Pasta Sapolio Limón Envase 800 g;Limpieza;Limpieza de cocina y hogar;SAPOLIO;https://www.tottus.com.pe/tottus-pe/articulo/113706554/lavavajilla-en-pasta-sapolio-limon-envase-800-g;2026-11-10;17
+113708106;Lejía Clorox Tradicional Botella 2 Kg;Limpieza;Limpieza de cocina y hogar;CLOROX;https://www.tottus.com.pe/tottus-pe/articulo/113708106/lejia-clorox-tradicional-botella-2-kg;2026-11-10;13
+136002680;Lejía Clorox Tradicional Botella 4 Kg;Limpieza;Limpieza de cocina y hogar;CLOROX;https://www.tottus.com.pe/tottus-pe/articulo/136002680/lejia-clorox-tradicional-botella-4-kg;2026-11-10;10
+113706242;Lejía Tradicional Tottus Botella 5 Kg;Limpieza;Limpieza de cocina y hogar;TOTTUS;https://www.tottus.com.pe/tottus-pe/articulo/113706242/lejia-tradicional-tottus-botella-5-kg;2026-11-10;10
+136375574;Limpiador Poett Frescura de Lavanda Botella 4.5 L;Limpieza;Limpieza de cocina y hogar;POETT;https://www.tottus.com.pe/tottus-pe/articulo/136375574/limpiador-poett-frescura-de-lavanda-botella-4-5-l;2026-11-10;9
+113705761;Papel Higiénico Elite Clásico Doble Hoja Empaque 40 Und;Limpieza;Papel y servilletas;ELITE;https://www.tottus.com.pe/tottus-pe/articulo/113705761/papel-higienico-elite-clasico-doble-hoja-empaque-40-und;2026-11-10;12
+113706198;Papel Higiénico Suave Esencias Elegance Empaque 8 Und;Limpieza;Papel y servilletas;SUAVE;https://www.tottus.com.pe/tottus-pe/articulo/113706198/papel-higienico-suave-esencias-elegance-empaque-8-und;2026-11-10;11
+150346609;Papel Higiénico Suave RindeMax 40 Metros Empaque 18 Und;Limpieza;Papel y servilletas;SUAVE;https://www.tottus.com.pe/tottus-pe/articulo/150346609/papel-higienico-rindemax-suave-empaque-18-und;2026-11-10;16
+143817112;Papel Toalla Nova Ultra Absorbente Empaque 6 Und;Limpieza;Papel y servilletas;NOVA;https://www.tottus.com.pe/tottus-pe/articulo/143817112/papel-toalla-nova-ultra-absorbente-empaque-6-und;2026-11-10;10
+144061055;Papel Toalla Paracas Rollazo Black Empaque 2 Und;Limpieza;Papel y servilletas;PARACAS;https://www.tottus.com.pe/tottus-pe/articulo/144061055/papel-toalla-paracas-rollazo-black-empaque-2-und;2026-11-10;13
+113929423;Servilletas Elite Doblada en 4 Empaque 100 Und;Limpieza;Papel y servilletas;ELITE;https://www.tottus.com.pe/tottus-pe/articulo/113929423/servilletas-elite-doblada-en-4-empaque-100-und;2026-11-10;14
+129087930;Leche Gloria Evaporada Entera Sixpack Lata 390 g;Lácteos;Leche;GLORIA;https://www.tottus.com.pe/tottus-pe/articulo/129087930/leche-gloria-evaporada-entera-sixpack-lata-390-g;2026-11-10;33
+129087935;Leche Gloria Light Sixpack Lata 390 g;Lácteos;Leche;GLORIA;https://www.tottus.com.pe/tottus-pe/articulo/129087935/leche-gloria-light-sixpack-lata-390-g;2026-11-10;15
+129087924;Leche Gloria Reconstituida Entera Sixpack Lata 390 g;Lácteos;Leche;GLORIA;https://www.tottus.com.pe/tottus-pe/articulo/129087924/leche-gloria-reconstituida-entera-sixpack-lata-390-g;2026-11-10;26
+129087764;Leche Gloria Zero Lacto Sixpack Lata 390 g;Lácteos;Leche;GLORIA;https://www.tottus.com.pe/tottus-pe/articulo/129087764/leche-gloria-zero-lacto-sixpack-lata-390-g;2026-11-10;17
+122584933;Leche Laive Practitarro Sin Lactosa Light Sixpack Botella 390 g;Lácteos;Leche;LAIVE;https://www.tottus.com.pe/tottus-pe/articulo/122584933/leche-de-tarro-laive-sin-lactosa-light-sixpack-botella-390-g;2026-11-10;13
+144752517;Leche UHT Entera Gloria Pack 3 Bolsas 800 mL;Lácteos;Leche;GLORIA;https://www.tottus.com.pe/tottus-pe/articulo/144752517/Leche%20UHT%20Entera%20Gloria%20Pack%203%20Bolsas%20800%20mL;2026-11-10;25
+144942889;Leche UHT Entera Gloria Pack 3 Cajas 946 mL;Lácteos;Leche;GLORIA;https://www.tottus.com.pe/tottus-pe/articulo/144942889/leche-uht-entera-gloria-pack-3-cajas-946-ml;2026-11-10;25
+144942676;Leche UHT Sin Lactosa Gloria Zero Lacto Pack 3 Cajas 946 mL;Lácteos;Leche;GLORIA;https://www.tottus.com.pe/tottus-pe/articulo/144942676/leche-uht-sin-lactosa-gloria-zero-lacto-pack-3-cajas-946-ml;2026-11-10;23
+113707112;Mantequilla con Sal Gloria Envase 390 g;Lácteos;Queso y mantequilla;GLORIA;https://www.tottus.com.pe/tottus-pe/articulo/113707112/mantequilla-con-sal-gloria-envase-390-g;2026-11-10;15
+115805395;Mantequilla con Sal Laive en Barra Empaque 180 g;Lácteos;Queso y mantequilla;LAIVE;https://www.tottus.com.pe/tottus-pe/articulo/115805395/mantequilla-con-sal-laive-en-barra-empaque-180-g;2026-11-10;12
+113929203;Mantequilla con Sal Plusa Empaque 200 g;Lácteos;Queso y mantequilla;PLUSA;https://www.tottus.com.pe/tottus-pe/articulo/113929203/mantequilla-con-sal-plusa-empaque-200-g;2026-11-10;11
+113929830;Queso Cottage Cabaña Plusa Envase 225 g;Lácteos;Queso y mantequilla;PLUSA;https://www.tottus.com.pe/tottus-pe/articulo/113929830/queso-cottage-cabana-plusa-envase-225-g;2026-11-10;9
+113705815;Queso Edam en Láminas Braedt Empaque 180 g;Lácteos;Queso y mantequilla;BRAEDT;https://www.tottus.com.pe/tottus-pe/articulo/113705815/queso-edam-en-laminas-braedt-empaque-180-g;2026-11-10;14
+115776320;Queso Edam en Láminas Braedt Empaque 440 g;Lácteos;Queso y mantequilla;BRAEDT;https://www.tottus.com.pe/tottus-pe/articulo/115776320/queso-edam-en-laminas-braedt-empaque-440-g;2026-11-10;10
+116001979;Yogurt Danlac Descremado Natural Envase 900 g;Lácteos;Yogurt;DANLAC;https://www.tottus.com.pe/tottus-pe/articulo/116001979/yogurt-danlac-descremado-natural-envase-900-g;2026-11-10;13
+145813819;Yogurt Gloria Fresa Botella 1.6 Kg;Lácteos;Yogurt;GLORIA;https://www.tottus.com.pe/tottus-pe/articulo/145813819/yogurt-gloria-fresa-botella-1-6-kg;2026-11-10;23
+145813807;Yogurt Gloria Lúcuma Botella 1.6 Kg;Lácteos;Yogurt;GLORIA;https://www.tottus.com.pe/tottus-pe/articulo/145813807/yogurt-gloria-lucuma-botella-1-6-kg;2026-11-10;15
+145813833;Yogurt Gloria Vainilla Botella 1.6 Kg;Lácteos;Yogurt;GLORIA;https://www.tottus.com.pe/tottus-pe/articulo/145813833/yogurt-gloria-vainilla-botella-1-6-kg;2026-11-10;21
+135790747;Yogurt Griego Vakimu Original Envase 960 g;Lácteos;Yogurt;VAKIMU;https://www.tottus.com.pe/tottus-pe/articulo/135790747/yogurt-griego-vakimu-original-envase-960-g;2026-11-10;16
+153650851;Yogurt Kefir Danlac Natural Botella 900 g;Lácteos;Yogurt;DANLAC;https://www.tottus.com.pe/tottus-pe/articulo/153650851/yogurt-kefir-danlac-natural-botella-900-g;2026-11-10;7
+148954128;Yogurt Plusa Skyr Natural Deslactosado Envase 500 g;Lácteos;Yogurt;PLUSA;https://www.tottus.com.pe/tottus-pe/articulo/148954128/yogurt-plusa-skyr-deslactosado-envase-500-g;2026-11-10;9
+153633239;Pan Brioche Victorsdou 500 g;Panadería;Pan empacado;VICTORSDOU;https://www.tottus.com.pe/tottus-pe/articulo/153633239/pan-brioche-victorsdou-victorsdou-bolsa-500-g;2026-11-10;11
+153633236;Pan Campesino Victorsdou 590 g;Panadería;Pan empacado;VICTORSDOU;https://www.tottus.com.pe/tottus-pe/articulo/153633236/pan-campesino-victorsdou-victorsdou-bolsa-590-g;2026-11-10;9
+117247536;Pan De Molde Integral Con Frutos Secos Tottus 510 g;Panadería;Pan empacado;TOTTUS;https://www.tottus.com.pe/tottus-pe/articulo/117247536/pan-de-molde-integral-con-frutos-secos-tottus-510-g;2026-11-10;18
+117248684;Pan De Molde Integral Multicereal Tottus 510 g;Panadería;Pan empacado;TOTTUS;https://www.tottus.com.pe/tottus-pe/articulo/117248684/pan-de-molde-integral-multicereal-tottus-510-g;2026-11-10;29
+154860317;Pan Focaccia Veda 550 g;Panadería;Pan empacado;VEDA;https://www.tottus.com.pe/tottus-pe/articulo/154860317/pan-focacciaveda-veda-bolsa-550-g;2026-11-10;6
+153633247;Pan Hamburguesa Brioche Victorsdou 260 g;Panadería;Pan empacado;VICTORSDOU;https://www.tottus.com.pe/tottus-pe/articulo/153633247/pan-hamburguesa-brioche-victorsdou-victorsdou-bolsa-260-g;2026-11-10;15
+153633233;Pan Hotdog Brioche Victorsdou 200 g;Panadería;Pan empacado;VICTORSDOU;https://www.tottus.com.pe/tottus-pe/articulo/153633233/pan-hotdog-brioche-victorsdou-victorsdou-bolsa-200-g;2026-11-10;14
+154860332;Pan de Poro Veda Veda Bolsa 550 g;Panadería;Pan empacado;VEDA;https://www.tottus.com.pe/tottus-pe/articulo/154860332/pan-de-poroveda-veda-bolsa-550-g;2026-11-10;8
+154860335;Pan de Semillas Veda 550 g;Panadería;Pan empacado;VEDA;https://www.tottus.com.pe/tottus-pe/articulo/154860335/pan-de-semillasveda-veda-bolsa-550-g;2026-11-10;6

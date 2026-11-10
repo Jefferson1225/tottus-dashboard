@@ -67,7 +67,7 @@ Las variables describen lo que se sabe al cierre: stock disponible, ventas del d
 
 Comparamos un árbol CART de profundidad limitada, Random Forest y SVM con kernel RBF. Los modelos ponderan las clases para que el entrenamiento no dependa solo de la más frecuente. SVM ajusta su escalado dentro de cada bloque.
 
-Evaluamos tres bloques de siete días por fecha con entrenamiento expansivo. Antes de cada bloque excluimos los registros cuya etiqueta aún no estaría disponible antes de la primera fecha evaluada. Las métricas y curvas usan las mismas observaciones para los tres modelos. Luego ajustamos cada modelo con las etiquetas disponibles hasta el corte para ordenar la revisión del día siguiente.
+Tomamos hasta 84 días de historial hasta el corte, inclusive. Evaluamos tres bloques de siete días por fecha con entrenamiento expansivo dentro de esa ventana. Antes de cada bloque excluimos los registros cuya etiqueta aún no estaría disponible antes de la primera fecha evaluada. Las métricas y curvas usan las mismas observaciones para los tres modelos. Luego ajustamos cada modelo con las etiquetas disponibles en la ventana para ordenar la revisión del día siguiente.
 
 El umbral modifica precisión, recall, F1 y la matriz de confusión. La curva precisión–recall se compara con la frecuencia de quiebres; AP resume la precisión a distintos niveles de recall. ROC-AUC y AP no dependen del umbral mostrado. Las salidas de los clasificadores no se presentan como probabilidades calibradas.
 

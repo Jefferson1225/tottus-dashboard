@@ -14,6 +14,7 @@ from src.panel_quiebres import panel_quiebres
 
 
 RAIZ = Path(__file__).resolve().parent
+DATOS_EJEMPLO = RAIZ / 'data' / 'demo'
 VERDE = '#16834b'
 COLORES = {'Sin stock': '#ce5547', 'Bajo mínimo': '#d69b35',
            'En nivel mínimo': '#647fbb', 'Disponible': VERDE, 'Sin datos': '#8b9490'}
@@ -91,9 +92,9 @@ def main():
 
     try:
         if fuente == 'Datos de ejemplo':
-            tablas = {tipo: cargar_csv(RAIZ / 'data' / 'demo' / f'{tipo}.csv', tipo)
+            tablas = {tipo: cargar_csv(DATOS_EJEMPLO / f'{tipo}.csv', tipo)
                       for tipo in ['productos', 'ventas', 'inventario']}
-            st.caption('Fuente: datos simulados.')
+            st.caption('Catálogo público de Tottus Perú · Ventas e inventario simulados para una sede de Lima.')
         else:
             st.info('Carga los tres archivos del mismo ámbito de inventario. Formato: CSV UTF-8, separado por punto y coma (;).')
             columnas = st.columns(3)
@@ -178,20 +179,29 @@ def main():
         izquierda, derecha = st.columns([1.65, 1])
         with izquierda, st.container(border=True):
             st.subheader('Evolución de ventas')
-            st.caption('Unidades registradas por día · periodo seleccionado')
+            frecuencia = st.radio('Ver evolución', ['Por mes', 'Por día'], horizontal=True, key='frecuencia_ventas')
             diarias = ventas_filtradas.groupby('fecha', as_index=False)['unidades_vendidas'].sum()
             if diarias.empty:
                 st.info('No hay registros de ventas para esta selección.')
             else:
-                grafico(diarias, {
+                mensual = frecuencia == 'Por mes'
+                if mensual:
+                    serie = diarias.groupby(pd.Grouper(key='fecha', freq='MS'))['unidades_vendidas'].mean().dropna().reset_index()
+                    st.caption('Promedio diario por mes. Se cuentan los días con registros dentro del periodo seleccionado.')
+                else:
+                    serie = diarias
+                    st.caption('Unidades registradas por día dentro del periodo seleccionado.')
+                formato = '%m/%Y' if mensual else '%d/%m/%Y'
+                unidad = 'Promedio diario' if mensual else 'Unidades'
+                grafico(serie, {
                     'mark': {'type': 'area', 'line': {'color': VERDE, 'strokeWidth': 2.5},
                              'color': {'gradient': 'linear', 'x1': 0, 'y1': 0, 'x2': 0, 'y2': 1,
                                        'stops': [{'offset': 0, 'color': '#8fcaa4'}, {'offset': 1, 'color': '#f6faf5'}]}},
                     'encoding': {
-                        'x': {'field': 'fecha', 'type': 'temporal', 'title': None, 'axis': {'format': '%d/%m', 'grid': False}},
-                        'y': {'field': 'unidades_vendidas', 'type': 'quantitative', 'title': 'Unidades'},
-                        'tooltip': [{'field': 'fecha', 'type': 'temporal', 'title': 'Fecha', 'format': '%d/%m/%Y'},
-                                    {'field': 'unidades_vendidas', 'type': 'quantitative', 'title': 'Unidades'}],
+                        'x': {'field': 'fecha', 'type': 'temporal', 'title': None, 'axis': {'format': formato, 'grid': False}},
+                        'y': {'field': 'unidades_vendidas', 'type': 'quantitative', 'title': unidad},
+                        'tooltip': [{'field': 'fecha', 'type': 'temporal', 'title': 'Mes' if mensual else 'Fecha', 'format': formato},
+                                    {'field': 'unidades_vendidas', 'type': 'quantitative', 'title': unidad, 'format': '.1f' if mensual else ',d'}],
                     },
                 })
         with derecha, st.container(border=True):
@@ -256,7 +266,7 @@ def main():
         panel_reposicion(demanda, inventario, corte, ventana)
     with quiebres:
         panel_quiebres(productos, catalogo, ventas, inventario, corte, fuente == 'Datos de ejemplo',
-                       RAIZ / 'data' / 'demo' / 'historial_stock.csv', grafico)
+                       DATOS_EJEMPLO / 'historial_stock.csv', grafico)
     with evaluacion:
         panel_evaluacion(catalogo, ventas, corte, ventana, grafico)
     with segmentos:
@@ -271,15 +281,31 @@ def main():
         with dos:
             st.markdown('**Alcance del análisis**\n\n- La reposición usa la media móvil y los parámetros de la política.\n- Las alertas estiman stock cero al siguiente cierre.\n- Los escenarios no modifican el inventario.\n- Los pedidos en tránsito y las reservas se gestionan fuera del panel.')
         st.divider()
-        st.markdown('**Datos de ejemplo**')
-        st.write('16 productos de 4 categorías, 1 328 registros diarios del 01/08/2026 al 22/10/2026 y un corte de inventario al 22/10/2026. Las ventas y el stock al cierre proceden de la misma simulación para una sede.')
+        if fuente == 'Datos de ejemplo':
+            st.markdown('**Catálogo y procedencia**')
+            total_ventas = f'{len(ventas):,}'.replace(',', ' ')
+            st.write(f'{len(productos)} productos de {productos["categoria"].nunique()} categorías y '
+                     f'{total_ventas} registros de ventas del {limites[0]:%d/%m/%Y} al {limites[1]:%d/%m/%Y}. '
+                     f'Hay {len(cortes)} cortes de inventario.')
+            st.caption('Las fichas provienen de Tottus Perú. El historial de ventas, los mínimos y el stock al cierre '
+                       'se simulan para una sola sede. La fecha de consulta corresponde al catálogo, no al historial.')
+            referencia = pd.read_csv(DATOS_EJEMPLO / 'catalogo_referencia.csv', sep=';', dtype={'producto_id': str})
+            referencia = referencia[referencia['producto_id'].isin(catalogo['producto_id'])]
+            with st.expander('Ver fichas de los productos seleccionados'):
+                st.dataframe(referencia[['producto_id', 'nombre', 'categoria', 'familia', 'marca', 'fuente_url',
+                                          'fecha_consulta']].rename(columns={**NOMBRES, 'familia': 'Familia',
+                                                                             'marca': 'Marca', 'fecha_consulta': 'Consulta'}),
+                             column_config={'fuente_url': st.column_config.LinkColumn('Fuente', display_text='Ver en Tottus')},
+                             hide_index=True, width='stretch')
+                st.download_button('Descargar catálogo de referencia', referencia.to_csv(index=False, sep=';').encode('utf-8-sig'),
+                                   file_name='catalogo_referencia.csv', mime='text/csv')
         st.caption('Los días ausentes en un archivo cargado no se completan con ceros. La cifra de ventas suma únicamente registros disponibles; no mide demanda no atendida ni probabilidad de quiebre.')
         with st.expander('Ver columnas requeridas y descargar CSV de ejemplo'):
             for tipo, tabla in tablas.items():
                 st.markdown(f'**{tipo}.csv**')
                 st.code(';'.join(tabla.columns), language=None)
                 st.download_button(f'Descargar ejemplo de {tipo}',
-                                   (RAIZ / 'data' / 'demo' / f'{tipo}.csv').read_bytes(),
+                                   (DATOS_EJEMPLO / f'{tipo}.csv').read_bytes(),
                                    file_name=f'{tipo}.csv', mime='text/csv', key=f'ejemplo_{tipo}')
             st.caption('Fechas AAAA-MM-DD; cantidades enteras no negativas; códigos como texto. Cada combinación de producto y fecha debe ser única. No se corrigen datos inválidos silenciosamente.')
 

@@ -59,7 +59,7 @@ Una fila por producto y fecha. Se carga en la pestaña **Alertas de quiebre** cu
 | `unidades_vendidas` | Entero no negativo | Ventas del día en ese mismo inventario. |
 | `stock_cierre` | Entero no negativo | Stock disponible al finalizar el día. |
 
-El modelo exige siete días consecutivos por producto para calcular variables. Una observación solo tiene etiqueta si también hay un cierre al día siguiente; si es cero, se etiqueta como quiebre al cierre. Los huecos no se rellenan. Para evaluar se requieren al menos 42 fechas con etiqueta y suficientes ejemplos de ambos estados. El panel admite hasta 20 000 filas anteriores o iguales al corte. Para los pares producto-fecha compartidos, las ventas deben coincidir con `ventas.csv` y el stock al cierre con `inventario.csv`.
+El modelo exige siete días consecutivos por producto para calcular variables. Una observación solo tiene etiqueta si también hay un cierre al día siguiente. Si es cero, se etiqueta como quiebre al cierre. Los huecos no se rellenan. Para evaluar se requieren al menos 42 fechas con etiqueta y suficientes ejemplos de ambos estados. El panel usa hasta 84 días naturales hasta el corte, inclusive, con un máximo de 20 000 filas en esa ventana. Para los pares producto-fecha compartidos hasta el corte, las ventas deben coincidir con `ventas.csv` y el stock al cierre con `inventario.csv`.
 
 ## Parámetros del modelo
 

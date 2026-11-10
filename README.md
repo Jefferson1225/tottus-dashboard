@@ -10,7 +10,7 @@ Integramos el análisis de ventas e inventario con una política de reposición:
 
 - Indicadores de productos analizados, unidades vendidas, productos sin stock y productos bajo el mínimo.
 - Filtros por categoría, producto, periodo de ventas y fecha de corte del inventario.
-- Gráficos de evolución diaria de ventas y ventas por categoría.
+- Gráficos de evolución diaria o mensual de ventas y ventas por categoría.
 - Alertas de productos sin stock o bajo el mínimo establecido.
 - Detalle de inventario y comparación del stock actual frente al mínimo.
 - Carga y validación de archivos CSV.
@@ -60,22 +60,20 @@ Abrir la dirección que muestra Streamlit, normalmente `http://127.0.0.1:8501`. 
 
 En Windows también se puede ejecutar `iniciar_dashboard.bat` después de instalar las dependencias.
 
-## Datos de demostración
+## Catálogo e historial de ventas
 
 Incluimos un conjunto de datos para ejecutar el dashboard desde el primer inicio:
 
 | Dato | Contenido |
 | --- | --- |
-| Productos | 16 |
-| Categorías | Abarrotes, Bebidas, Limpieza y Cuidado personal |
-| Periodo de ventas | 01/08/2026 al 22/10/2026 |
-| Registros diarios | 1 328 |
-| Corte de inventario | 22/10/2026 |
-| Ámbito | Una sede ficticia de demostración |
+| Productos | 150 fichas públicas de Tottus Perú |
+| Categorías | Abarrotes, Bebidas, Congelados, Cuidado personal, Helados, Lácteos, Limpieza y Panadería |
+| Periodo de ventas | 01/01/2025 al 09/11/2026 |
+| Registros diarios | 101 700 en 678 días |
+| Cortes de inventario | 23, uno por fin de mes y el del último día del historial |
+| Ámbito | Una sede simulada de Lima |
 
-Los archivos de [`data/demo`](data/demo) contienen datos simulados. Las ventas atendidas, el saldo diario y el corte de inventario proceden de la misma simulación.
-
-En el corte de ejemplo hay 1 producto sin stock y 8 bajo el mínimo. El producto sin stock también está incluido en el segundo indicador, por lo que ambos conteos no deben sumarse.
+En **Datos y alcance** se puede abrir la ficha de cada producto seleccionado y descargar el catálogo. Las ventas y el inventario salen de una simulación que distingue la demanda estable del arroz del aumento en verano de los helados y el agua. Los supuestos y las fuentes están en [data/demo](data/demo).
 
 Para regenerar los mismos datos en Windows:
 
@@ -83,7 +81,7 @@ Para regenerar los mismos datos en Windows:
 .\.venv\Scripts\python.exe scripts/generar_demo.py
 ```
 
-El script utiliza semillas fijas y reemplaza los cuatro CSV de ejemplo. `historial_stock.csv` conserva las ventas atendidas y el stock al cierre de cada día para el panel de alertas.
+El script toma el catálogo de referencia guardado, utiliza semillas fijas y reemplaza los cuatro CSV que usa el dashboard. `historial_stock.csv` conserva las ventas atendidas y el stock al cierre de cada día para el panel de alertas.
 
 ## Carga de archivos CSV
 
@@ -161,7 +159,7 @@ La prioridad **alta** indica que el stock no supera las ventas estimadas durante
 
 - **Evaluación temporal:** comparamos la media móvil y una referencia semanal sobre 14 fechas de inicio por producto. El horizonte configurable acumula las ventas previstas y observadas. Cada estimación usa solo datos anteriores a su inicio. MAE y RMSE miden el error en unidades del horizonte; WAPE queda vacío si el total observado es cero.
 - **Segmentación:** comparamos K-means, K-medoids y Ward sobre las mismas variables estandarizadas. Mostramos perfiles en escala original, productos representativos y silueta. K-means incluye el análisis del codo; Ward muestra el dendrograma.
-- **Alertas:** entrenamos CART, Random Forest y SVM para anticipar stock cero en el siguiente cierre. Los bloques de evaluación se separan por fecha. El panel muestra precisión, recall, F1, ROC-AUC, AP y la matriz de confusión. El puntaje ordena la atención y es independiente de la cantidad sugerida de reposición.
+- **Alertas:** entrenamos CART, Random Forest y SVM con hasta 84 días hasta el corte para anticipar stock cero en el siguiente cierre. Los bloques de evaluación se separan por fecha. El panel muestra precisión, recall, F1, ROC-AUC, AP y la matriz de confusión. El puntaje ordena la atención y es independiente de la cantidad sugerida de reposición.
 
 La [metodología del análisis](docs/metodologia-analisis.md) detalla supuestos, fórmulas, evaluación y relación con las sesiones de clase.
 

@@ -1,17 +1,151 @@
 producto_id;nombre;categoria
-0001;Arroz extra 1 kg;Abarrotes
-0002;Aceite vegetal 1 L;Abarrotes
-0003;Azúcar rubia 1 kg;Abarrotes
-0004;Fideos tallarín 500 g;Abarrotes
-0005;Leche evaporada 400 g;Abarrotes
-0006;Agua sin gas 625 ml;Bebidas
-0007;Gaseosa cola 1.5 L;Bebidas
-0008;Néctar de durazno 1 L;Bebidas
-0009;Bebida isotónica 500 ml;Bebidas
-0010;Detergente en polvo 800 g;Limpieza
-0011;Lejía 1 L;Limpieza
-0012;Lavavajillas 750 g;Limpieza
-0013;Limpiador multiuso 900 ml;Limpieza
-0014;Jabón de tocador 90 g;Cuidado personal
-0015;Pasta dental 90 g;Cuidado personal
-0016;Champú familiar 400 ml;Cuidado personal
+119580635;Aceite Vegetal Primor Clásico Botella 1.8 L;Abarrotes
+113706444;Aceite Vegetal Primor Clásico Botella 900 mL;Abarrotes
+113706602;Aceite Vegetal Primor Premium Botella 900 mL;Abarrotes
+115267788;Aceite Vegetal Soya Sao Botella 900 mL;Abarrotes
+115776531;Aceite Vegetal Tottus Botella 900 mL;Abarrotes
+135790681;Aceite Vegetal del Cielo Botella 900 mL;Abarrotes
+113707306;Arroz Extra Costeño Bolsa 5 Kg;Abarrotes
+113707117;Arroz Extra Costeño Bolsa 750 g;Abarrotes
+113706394;Arroz Extra Gran Chalán Bolsa 5 Kg;Abarrotes
+113706244;Arroz Extra Paisana Bolsa 1 Kg;Abarrotes
+113705624;Arroz Extra Paisana Bolsa 5 Kg;Abarrotes
+113708338;Arroz Extra Tottus Bolsa 10 Kg;Abarrotes
+113706045;Arroz Extra Tottus Bolsa 5 Kg;Abarrotes
+113705607;Arroz Extra Tottus Bolsa 750 g;Abarrotes
+113706692;Arroz Integral Paisana Bolsa 1 Kg;Abarrotes
+113706127;Arroz Superior Tottus Bolsa 5 Kg;Abarrotes
+139815379;Filete de Atún Campomar en Aceite Lata 150 g;Abarrotes
+116902429;Filete de Atún Florida en Aceite Vegetal Lata 140 g;Abarrotes
+115473747;Filete de Atún Primor Lata 140 g;Abarrotes
+120622965;Filete de Atún Tottus en Aceite Lata 140 g;Abarrotes
+119041289;Filete de Atún en Agua Primor Lata 140g;Abarrotes
+120623057;Trozos de Atún Tottus en Aceite Sixpack Lata 140 g;Abarrotes
+115878270;Trozos de Atún en Aceite Primor Lata 140 g;Abarrotes
+154453148;MayoPicante Alacena Doypack 200 g;Abarrotes
+145796749;Mayonesa Alacena Doypack 235 g;Abarrotes
+113712628;Mayonesa Alacena Doypack 475 g;Abarrotes
+116539348;Mayonesa Alacena Doypack 850 g;Abarrotes
+115845718;Mayonesa Hellmanns Real Botella 443 mL;Abarrotes
+116982230;Mayonesa Light AlaCena Doypack 400 g;Abarrotes
+144450306;Mayonesa Pollera D Gussto Doypack 250 g;Abarrotes
+152252605;Mayonesa Tottus Doypack 235 g;Abarrotes
+113711720;Mayonesa Tottus Doypack 475 g;Abarrotes
+113708733;Arveja Partida Tottus Menestra Bolsa 500 g;Abarrotes
+113706230;Frijol Canario Tottus Menestra Bolsa 500 g;Abarrotes
+113706832;Frijol Castilla Tottus Menestra Bolsa 500 g;Abarrotes
+113706912;Frijol Negro Tottus Menestra Bolsa 500 g;Abarrotes
+113708319;Lenteja Bebé Menestra Tottus Bolsa 500 g;Abarrotes
+113706824;Lenteja Tottus Menestra Bolsa 1 Kg;Abarrotes
+113709037;Lenteja Tottus Menestra Bolsa 500 g;Abarrotes
+115844961;Quinua Tottus Menestra Bolsa 500 g;Abarrotes
+113712878;Salsa Roja Completa Don Vittorio Doypack 400 g;Abarrotes
+113707310;Salsa Tomate Pomarola Clasica Bolsa 145 g;Abarrotes
+113707254;Fideos Spaghetti Molitalia Bolsa 950 g;Abarrotes
+115807056;Spaguetti Don Vittorio Paquete 950 g;Abarrotes
+113708765;Tornillo Don Vittorio Paquete 500 g;Abarrotes
+113707784;Sal de Mar Marina Emsal de Cocina Bolsa 1 Kg;Abarrotes
+113705699;Sal de Mar Marina Emsal de Mesa Bolsa 1 Kg;Abarrotes
+115807177;Vinagre Blanco Tottus Botella 1 L;Abarrotes
+144746409;Agua Cielo Con Gas Sabor Maracuyá Botella 600 mL;Bebidas
+113374841;Agua Cielo Sin Gas Bidón 7 L;Bebidas
+113380024;Agua Cielo Sin Gas Botella 2.5 L;Bebidas
+113366759;Agua Cielo Sin Gas Sixpack Botella 625 mL;Bebidas
+113376637;Agua San Luis Con Gas Botella 625 mL;Bebidas
+113369124;Agua San Luis Sin Gas Botella 1 L;Bebidas
+152010566;Agua San Luis Sin Gas Botella 3 L;Bebidas
+113368318;Agua San Mateo Sin Gas Botella 2.5 L;Bebidas
+113366430;Agua San Mateo con Gas Sixpack Botella 600 mL;Bebidas
+113365992;Agua San Mateo sin Gas Bidón 7 L;Bebidas
+113366534;Agua San Mateo sin Gas Sixpack Botella 600 mL;Bebidas
+116978042;Agua Tottus Sin Gas Bidón 7 L;Bebidas
+133063044;Agua Tottus Sin Gas Pack 15 Botellas 625 mL;Bebidas
+113367981;Agua sin Gas San Carlos Pack 20 Botellas 500 mL;Bebidas
+128148636;Arveja en Granos Congelado Tottus Bolsa 400 g;Congelados
+115812731;Hamburguesa de Pollo y Res La Casera San Fernando Empaque 910 g;Congelados
+128148651;Mix Arverja Choclo Zanahoria y Vainita Tottus Bolsa 400 g;Congelados
+128148635;Mix Vegetales Congelados Primavera Tottus Bolsa 400 g;Congelados
+147179530;Nuggets Pollo San Fernando Bolsa 36 Und;Congelados
+153044064;Nuggets de Pechuga de Pollo Braedt Empaque 330 g;Congelados
+124384444;Nuggets de Pollo Avinka Bolsa 15 Und;Congelados
+128940947;Nuggets de Pollo San Fernando 900 g (60 Un);Congelados
+113706758;Papas Pre Fritas Rectas Congeladas Tottus Bolsa 1 Kg;Congelados
+115462419;Fresa Entera Congelada El Frutero Bolsa 1 Kg;Congelados
+124134439;Mix Fresa Papaya y Piña Congelada en Trozos Tottus Bolsa 1 Kg;Congelados
+124134452;Piña Congelada en Trozos Tottus Bolsa 1 Kg;Congelados
+124134440;Pulpa de Fresa Congelada Tottus Empaque 500 g;Congelados
+113707408;Crema Dental Colgate Luminous White Blanqueadora Caja 2 Und 75 mL;Cuidado personal
+113715476;Crema Dental Colgate Total Original Mint Prevención Activa Caja 3 Und;Cuidado personal
+113714484;Crema Dental Colgate Triple Accion Caja 3 Und 100 ml;Cuidado personal
+113712994;Pasta Dental Aquafresh Triple Protección Pack 3 Cajas 100 g;Cuidado personal
+115366449;Pasta Dental Dento Triple Acción Tripack Caja 80 g;Cuidado personal
+115221306;Antitranspirante Aerosol Rexona Men V8 Empaque 2 Und;Cuidado personal
+113708126;Protectores Diarios Nosotras Normal Empaque 150 Und;Cuidado personal
+114325247;Toallas Higiénicas Ladysoft Normal Tela Suave Empaque 60 Und;Cuidado personal
+143218017;Toallas Higiénicas Nosotras Alas Tela Gel Empaque 48 Und;Cuidado personal
+122324491;Toallas Higiénicas Nosotras Buenas Noches Empaque 30 Und;Cuidado personal
+138899920;Jabón Líquido Ballerina Avena y Almendra Doypack 750 mL;Cuidado personal
+114073501;Jabón de Tocador Dove Original Caja 3 Und;Cuidado personal
+113708615;Jabón de Tocador Dove Original Empaque 6 Und;Cuidado personal
+113930245;Jabón de Tocador Tottus Aloe Vera Empaque 3 Und;Cuidado personal
+113707242;Jabón de Tocador Tottus Avena Miel Empaque 3 Und;Cuidado personal
+120189866;Jabón en Barra Palmolive Avena y Azucar Empaque 3 Und 110 g;Cuidado personal
+113707383;Jabón en Barra Protex Avena Empaque 3 Und 110 g;Cuidado personal
+113707691;Helado Donofrio Peziduri Chocochips Pote 2.2 L;Helados
+124755045;Helado Donofrio Peziduri Chocochips Pote 900 mL;Helados
+124755051;Helado Donofrio Peziduri Chocolate Pote 900 mL;Helados
+113713848;Helado Donofrio Peziduri Chocolúcuma Vainilla Pote 2.2 L;Helados
+113706566;Helado Donofrio Peziduri Tricolor Pote 2.2 L;Helados
+124755041;Helado Donofrio Peziduri Tricolor Pote 900 mL;Helados
+127702854;Helado Donofrio Princesa Chocolate Maní Pote 900 mL;Helados
+113707585;Helado Donofrio Sublime Chocolate con Maní Pote 900 mL;Helados
+130519765;Detergente en Polvo Bolívar Cuidado Total Bolsa 4 Kg;Limpieza
+142281540;Detergente en Polvo Marsella Lavanda y Rosas Bolsa 4 Kg;Limpieza
+135790741;Detergente en Polvo Opal Ultra Bolsa 4 Kg;Limpieza
+113714236;Detergente en Polvo Sapolio Floral Bolsa 4 Kg;Limpieza
+113707152;Jabón Líquido Skip Doypack 3 L;Limpieza
+132020969;Jabón de Lavar Bolívar Cuidado Total Empaque 380 g;Limpieza
+113712394;Suavizante Suavitel Fresca Primavera Doypack 2.3 L;Limpieza
+123560377;Lavavajilla Liquido Sapolio Lima Limón Botella 1250 mL;Limpieza
+113706297;Lavavajilla Líquido Antibacterial Tottus Limón Envase 1.2 L;Limpieza
+113706554;Lavavajilla en Pasta Sapolio Limón Envase 800 g;Limpieza
+113708106;Lejía Clorox Tradicional Botella 2 Kg;Limpieza
+136002680;Lejía Clorox Tradicional Botella 4 Kg;Limpieza
+113706242;Lejía Tradicional Tottus Botella 5 Kg;Limpieza
+136375574;Limpiador Poett Frescura de Lavanda Botella 4.5 L;Limpieza
+113705761;Papel Higiénico Elite Clásico Doble Hoja Empaque 40 Und;Limpieza
+113706198;Papel Higiénico Suave Esencias Elegance Empaque 8 Und;Limpieza
+150346609;Papel Higiénico Suave RindeMax 40 Metros Empaque 18 Und;Limpieza
+143817112;Papel Toalla Nova Ultra Absorbente Empaque 6 Und;Limpieza
+144061055;Papel Toalla Paracas Rollazo Black Empaque 2 Und;Limpieza
+113929423;Servilletas Elite Doblada en 4 Empaque 100 Und;Limpieza
+129087930;Leche Gloria Evaporada Entera Sixpack Lata 390 g;Lácteos
+129087935;Leche Gloria Light Sixpack Lata 390 g;Lácteos
+129087924;Leche Gloria Reconstituida Entera Sixpack Lata 390 g;Lácteos
+129087764;Leche Gloria Zero Lacto Sixpack Lata 390 g;Lácteos
+122584933;Leche Laive Practitarro Sin Lactosa Light Sixpack Botella 390 g;Lácteos
+144752517;Leche UHT Entera Gloria Pack 3 Bolsas 800 mL;Lácteos
+144942889;Leche UHT Entera Gloria Pack 3 Cajas 946 mL;Lácteos
+144942676;Leche UHT Sin Lactosa Gloria Zero Lacto Pack 3 Cajas 946 mL;Lácteos
+113707112;Mantequilla con Sal Gloria Envase 390 g;Lácteos
+115805395;Mantequilla con Sal Laive en Barra Empaque 180 g;Lácteos
+113929203;Mantequilla con Sal Plusa Empaque 200 g;Lácteos
+113929830;Queso Cottage Cabaña Plusa Envase 225 g;Lácteos
+113705815;Queso Edam en Láminas Braedt Empaque 180 g;Lácteos
+115776320;Queso Edam en Láminas Braedt Empaque 440 g;Lácteos
+116001979;Yogurt Danlac Descremado Natural Envase 900 g;Lácteos
+145813819;Yogurt Gloria Fresa Botella 1.6 Kg;Lácteos
+145813807;Yogurt Gloria Lúcuma Botella 1.6 Kg;Lácteos
+145813833;Yogurt Gloria Vainilla Botella 1.6 Kg;Lácteos
+135790747;Yogurt Griego Vakimu Original Envase 960 g;Lácteos
+153650851;Yogurt Kefir Danlac Natural Botella 900 g;Lácteos
+148954128;Yogurt Plusa Skyr Natural Deslactosado Envase 500 g;Lácteos
+153633239;Pan Brioche Victorsdou 500 g;Panadería
+153633236;Pan Campesino Victorsdou 590 g;Panadería
+117247536;Pan De Molde Integral Con Frutos Secos Tottus 510 g;Panadería
+117248684;Pan De Molde Integral Multicereal Tottus 510 g;Panadería
+154860317;Pan Focaccia Veda 550 g;Panadería
+153633247;Pan Hamburguesa Brioche Victorsdou 260 g;Panadería
+153633233;Pan Hotdog Brioche Victorsdou 200 g;Panadería
+154860332;Pan de Poro Veda Veda Bolsa 550 g;Panadería
+154860335;Pan de Semillas Veda 550 g;Panadería
