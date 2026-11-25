@@ -31,7 +31,8 @@ class DashboardTests(unittest.TestCase):
         self.assertFalse(app.exception)
         self.verificar_indicadores(app, self.stock)
         self.assertEqual([tab.label for tab in app.tabs],
-                         ['Vista general', 'Inventario', 'Reposición', 'Análisis avanzado', 'Datos y alcance'])
+                         ['Vista general', 'Inventario', 'Reposición', 'Escenarios What-If',
+                          'Pronóstico y modelos', 'Datos y alcance'])
         self.assertNotIn('Modelo de alertas', [control.label for control in app.selectbox])
         self.assertIn('Ver fichas de los productos seleccionados', [e.label for e in app.expander])
         app.multiselect(key='categorias').set_value(['Bebidas']).run()
@@ -45,9 +46,13 @@ class DashboardTests(unittest.TestCase):
         app.selectbox(key='modelo_quiebres').set_value('SVM (RBF)')
         app.slider(key='umbral_quiebres').set_value(.75).run()
         app.selectbox(key='analisis_avanzado').set_value('Evaluación de demanda').run()
+        sku = self.productos.loc[self.productos['categoria'].eq('Bebidas'), 'producto_id'].iloc[-1]
+        app.selectbox(key='producto_evaluacion').set_value(sku).run()
         app.selectbox(key='analisis_avanzado').set_value('Alertas de quiebre').run()
         self.assertEqual(app.selectbox(key='modelo_quiebres').value, 'SVM (RBF)')
         self.assertEqual(app.slider(key='umbral_quiebres').value, .75)
+        app.selectbox(key='analisis_avanzado').set_value('Evaluación de demanda').run()
+        self.assertEqual(app.selectbox(key='producto_evaluacion').value, sku)
 
     def test_catalogo_sin_seleccion_y_carga_pendiente(self):
         app = AppTest.from_file(str(APP), default_timeout=30).run()
@@ -98,23 +103,20 @@ class DashboardTests(unittest.TestCase):
     def test_reposicion_sin_cambios_coincide_con_base(self):
         app = AppTest.from_file(str(APP), default_timeout=60).run()
         self.assertFalse(app.exception)
-        self.assertTrue(any(list(tabla.value.columns) == ['Producto', 'Stock actual', 'Prioridad', 'Cantidad sugerida']
-                            for tabla in app.dataframe))
-        self.assertNotIn('variacion_demanda', [slider.key for slider in app.slider])
+        columnas = ['Producto', 'Stock actual', 'Demanda diaria', 'Punto de reorden',
+                    'Prioridad por riesgo', 'Cantidad sugerida']
+        self.assertTrue(any(list(tabla.value.columns) == columnas for tabla in app.dataframe))
         codigo = self.stock.loc[self.stock['stock_actual'].eq(0), 'producto_id'].iloc[0]
         app.multiselect(key='productos').set_value([codigo]).run()
         self.assertFalse(app.exception)
         base = next(m.value for m in app.metric if m.label == 'Unidades sugeridas · base')
         self.assertGreater(int(base.replace(' ', '')), 0)
-        app.checkbox(key='mostrar_escenario').check().run()
-        self.assertFalse(app.exception)
         self.assertEqual(next(m.value for m in app.metric if m.label == 'Unidades sugeridas · escenario'), base)
 
     def test_estres_aumenta_propuesta_y_parametros_no_alteran_ventas(self):
         app = AppTest.from_file(str(APP), default_timeout=60).run()
         unidades = app.metric[0].value
         base = int(next(m.value for m in app.metric if m.label == 'Unidades sugeridas · base').replace(' ', ''))
-        app.checkbox(key='mostrar_escenario').check().run()
         app.slider(key='variacion_demanda').set_value(50).run()
         self.assertFalse(app.exception)
         escenario = int(next(m.value for m in app.metric if m.label == 'Unidades sugeridas · escenario').replace(' ', ''))
@@ -122,10 +124,38 @@ class DashboardTests(unittest.TestCase):
         self.assertEqual(next(m.value for m in app.metric if m.label == 'Unidades sugeridas · base'),
                          f'{base:,}'.replace(',', ' '))
         self.assertEqual(app.metric[0].value, unidades)
-        app.checkbox(key='mostrar_escenario').uncheck().run()
-        self.assertNotIn('variacion_demanda', [slider.key for slider in app.slider])
-        app.checkbox(key='mostrar_escenario').check().run()
-        self.assertEqual(app.slider(key='variacion_demanda').value, 50)
+
+    def test_escenarios_lrpd_sensibilidad_y_meta(self):
+        app = AppTest.from_file(str(APP), default_timeout=30).run()
+        app.multiselect(key='productos').set_value(['113708338']).run()
+        for caso, esperado in [('escenario_favorable', '78'), ('escenario_estres', '165')]:
+            app.button(key=caso).click().run()
+            self.assertFalse(app.exception)
+            self.assertFalse(app.warning)
+            self.assertEqual(next(m.value for m in app.metric if m.label == 'Unidades sugeridas · escenario'), esperado)
+        tabla = next(t.value for t in app.dataframe if 'Variación de demanda (%)' in t.value)
+        self.assertEqual(tabla.loc[tabla['Variación de demanda (%)'].eq(0), 'Cantidad sugerida'].item(), 110)
+        app.number_input(key='dias_meta_cobertura').set_value(5).run()
+        self.assertEqual(next(m.value for m in app.metric if m.label == 'Stock para la meta'), '57')
+        self.assertEqual(next(m.value for m in app.metric if m.label == 'Unidades que faltan'), '30')
+
+    def test_meta_entera_no_sube_una_unidad_por_redondeo_binario(self):
+        app = AppTest.from_file(str(APP), default_timeout=30).run()
+        app.radio(key='fuente').set_value('Cargar mis CSV').run()
+        dias = pd.date_range('2026-10-01', periods=14)
+        ventas = pd.DataFrame({'fecha': dias.strftime('%Y-%m-%d'), 'producto_id': '001',
+                               'unidades_vendidas': [9] + [0] * 13})
+        archivos = {
+            'productos': b'producto_id;nombre;categoria\n001;Arroz;Abarrotes\n',
+            'ventas': ventas.to_csv(sep=';', index=False).encode('utf-8'),
+            'inventario': b'fecha_corte;producto_id;stock_actual;stock_minimo\n2026-10-14;001;5;1\n',
+        }
+        for tipo, contenido in archivos.items():
+            app.file_uploader(key=f'archivo_{tipo}').upload(f'{tipo}.csv', contenido, 'text/csv')
+        app.run()
+        app.selectbox(key='ventana_modelo').set_value(14).run()
+        app.number_input(key='dias_meta_cobertura').set_value(42).run()
+        self.assertEqual(next(m.value for m in app.metric if m.label == 'Stock para la meta'), '27')
 
 
 if __name__ == '__main__':

@@ -8,11 +8,18 @@ Reunimos las ventas históricas y el stock disponible para identificar los produ
 
 - **Vista general.** Tres indicadores muestran las unidades vendidas, los productos agotados y los productos con stock bajo que aún tienen unidades. Los gráficos permiten ver la evolución diaria o mensual y las ventas por categoría.
 - **Inventario.** Consultamos el stock, el mínimo y las ventas por producto, con los agotados y los que tienen stock bajo primero. La tabla se puede descargar.
-- **Reposición.** Ordenamos los productos por prioridad y vemos cuántas unidades sugiere pedir la política base. En **Detalle del cálculo** podemos revisar la demanda estimada, la cobertura y el punto de reorden. En **Simular escenario (What-If)** podemos variar demanda, plazo y stock.
-- **Análisis avanzado.** Desde un selector se puede evaluar el pronóstico, comparar las alertas de quiebre de CART, Random Forest y SVM, o segmentar el catálogo con K-means, K-medoids y Ward.
+- **Reposición.** La misma fila muestra el stock actual, la demanda diaria, el punto de reorden, la prioridad por riesgo y las unidades sugeridas. **Detalle del cálculo** explica la propuesta para cada producto.
+- **Escenarios What-If.** Podemos partir de un caso favorable o de temporada alta con retraso y ajustar demanda, plazo y stock. También podemos revisar la sensibilidad a la demanda y calcular el stock para una meta de cobertura.
+- **Pronóstico y modelos.** Abre con la evaluación de demanda. Desde el selector se puede pasar a alertas de quiebre con CART, Random Forest y SVM, o a segmentación con K-means, K-medoids y Ward.
 - **Datos y alcance.** Incluye enlaces a las fichas públicas de Tottus y los formatos CSV.
 
 En el menú lateral podemos filtrar por categoría, producto, periodo de ventas y corte de inventario. La prioridad de reposición se calcula con el stock disponible y la demanda estimada.
+
+## Cómo mostrar el dashboard
+
+Con los datos de ejemplo, selecciona **Arroz Extra Tottus Bolsa 10 Kg** y conserva el corte del **09/11/2026**. En **Reposición**, la política base sugiere **110 unidades**. En **Escenarios What-If**, pulsa **Favorable** para ver **78 unidades** y luego **Temporada alta con retraso** para ver **165**. Cada caso muestra la prioridad y cantidad junto a las de la política base.
+
+La [metodología](docs/metodologia-analisis.md#correspondencia-con-el-lrpd) indica dónde se trabaja cada objetivo del LRPD.
 
 ## Tecnologías
 
@@ -91,7 +98,7 @@ El periodo seleccionado filtra las ventas; el stock corresponde a la fecha de co
 
 El [diccionario de datos](docs/diccionario-datos.md) detalla los campos y las reglas utilizadas.
 
-Para calcular **Alertas de quiebre** con archivos propios, abre **Historial para alertas** en **Análisis avanzado** y carga `historial_stock.csv`. Debe contener el stock al cierre y las ventas de cada producto por día.
+Para calcular **Alertas de quiebre** con archivos propios, abre **Historial para alertas** en **Pronóstico y modelos** y carga `historial_stock.csv`. Debe contener el stock al cierre y las ventas de cada producto por día.
 
 ## Estructura del proyecto
 

@@ -1,5 +1,8 @@
 """Paneles de demanda, reposición y perfiles de productos."""
 
+from fractions import Fraction
+from math import ceil
+
 import pandas as pd
 import streamlit as st
 
@@ -47,10 +50,19 @@ def panel_reposicion(demanda, inventario, corte, ventana):
         key=lambda columna: columna.map(ORDEN_PRIORIDAD) if columna.name == 'prioridad' else columna)
     total_base = base['cantidad_sugerida'].sum(min_count=1)
     st.metric('Unidades sugeridas · base', numero(total_base), border=True)
-    columnas = {'nombre': 'Producto', 'stock_actual': 'Stock actual', 'prioridad': 'Prioridad',
+    columnas = {'nombre': 'Producto', 'stock_actual': 'Stock actual', 'demanda_diaria': 'Demanda diaria',
+                'punto_reorden': 'Punto de reorden', 'prioridad': 'Prioridad por riesgo',
                 'cantidad_sugerida': 'Cantidad sugerida'}
     st.dataframe(base[list(columnas)].rename(columns=columnas), hide_index=True, width='stretch',
-                 column_config={'Cantidad sugerida': st.column_config.NumberColumn(format='%d')})
+                 column_config={
+                     'Producto': st.column_config.TextColumn(width='medium'),
+                     'Demanda diaria': st.column_config.NumberColumn(format='%.2f', help='Unidades estimadas por día.'),
+                     'Punto de reorden': st.column_config.NumberColumn(
+                         format='%d', help='Si el stock alcanza este nivel o cae por debajo, se activa la reposición.'),
+                     'Prioridad por riesgo': st.column_config.TextColumn(
+                         help='Alta si el stock no alcanza para superar la venta estimada durante la entrega.'),
+                     'Cantidad sugerida': st.column_config.NumberColumn(format='%d'),
+                 })
     excluidos = base['prioridad'].eq('No evaluable').sum()
     if excluidos:
         st.warning(f'{excluidos} producto(s) tienen histórico incompleto o falta de inventario.')
@@ -82,27 +94,38 @@ ese umbral, sugerimos las unidades que faltan para cubrir la entrega, el periodo
 La propuesta supone cero pedidos en tránsito y cero reservas.
 ''')
 
-    if st.checkbox('Simular escenario (What-If)', key='mostrar_escenario'):
-        _panel_escenario(demanda, inventario, corte, ventana, parametros, base, total_base)
-    else:
-        # Mantiene los ajustes cuando los controles dejan de dibujarse.
-        for clave in ('variacion_demanda', 'retraso', 'cambio_stock'):
-            if clave in st.session_state:
-                st.session_state[clave] = st.session_state[clave]
+    return base, parametros
 
 
-def _panel_escenario(demanda, inventario, corte, ventana, parametros, base, total_base):
+def _cargar_escenario(variacion, retraso, stock):
+    st.session_state.update(variacion_demanda=variacion, retraso=retraso, cambio_stock=stock)
+
+
+def panel_escenarios(demanda, inventario, corte, ventana, parametros, base):
+    st.subheader('Comparar escenarios de reposición')
+    st.caption(f'Mismo inventario de partida al {corte:%d/%m/%Y}. '
+               f'El escenario suma el retraso elegido al plazo base de {parametros["plazo"]} días.')
+    for clave in ('variacion_demanda', 'retraso', 'cambio_stock'):
+        st.session_state.setdefault(clave, 0)
     with st.container(border=True):
         a, b, c = st.columns(3)
-        variacion = a.slider('Variación de demanda (%)', -100, 100, 0, 10, key='variacion_demanda')
-        retraso = b.slider('Retraso adicional (días)', 0, 14, 0, key='retraso')
-        cambio_stock = c.slider('Variación del stock (%)', -100, 100, 0, 10, key='cambio_stock')
-        st.caption('Se compara el escenario con la política base para el mismo corte.')
+        a.button('Favorable', key='escenario_favorable', on_click=_cargar_escenario, args=(-20, 0, 20),
+                 help='Demanda 20 % menor, stock 20 % mayor y entrega sin retraso.')
+        b.button('Temporada alta con retraso', key='escenario_estres', on_click=_cargar_escenario, args=(20, 2, 0),
+                 help='Demanda 20 % mayor, dos días adicionales de entrega y el mismo stock.')
+        c.button('Volver a la base', key='escenario_base', on_click=_cargar_escenario, args=(0, 0, 0))
+        a, b, c = st.columns(3)
+        variacion = a.slider('Variación de demanda (%)', -100, 100, step=10, key='variacion_demanda')
+        retraso = b.slider('Retraso adicional (días)', 0, 14, key='retraso')
+        cambio_stock = c.slider('Variación del stock (%)', -100, 100, step=10, key='cambio_stock')
 
     escenario = calcular_reposicion(demanda, inventario, corte, **parametros,
                                     variacion=variacion, retraso=retraso, cambio_stock=cambio_stock)
+    total_base = base['cantidad_sugerida'].sum(min_count=1)
     total_escenario = escenario['cantidad_sugerida'].sum(min_count=1)
-    st.metric('Unidades sugeridas · escenario', numero(total_escenario),
+    a, b = st.columns(2)
+    a.metric('Unidades sugeridas · política base', numero(total_base), border=True)
+    b.metric('Unidades sugeridas · escenario', numero(total_escenario),
              delta=None if pd.isna(total_escenario) else numero(total_escenario - total_base),
              delta_color='off', border=True)
 
@@ -124,6 +147,42 @@ def _panel_escenario(demanda, inventario, corte, ventana, parametros, base, tota
                                      variacion_demanda_pct=variacion, retraso_dias=retraso, cambio_stock_pct=cambio_stock)
     st.download_button('Descargar comparación de escenarios', exportacion.to_csv(index=False, sep=';').encode('utf-8-sig'),
                        file_name=f'escenarios_{corte:%Y%m%d}.csv', mime='text/csv')
+    with st.expander('Sensibilidad y meta de cobertura'):
+        _panel_sensibilidad(demanda, inventario, corte, parametros, base)
+
+
+def _panel_sensibilidad(demanda, inventario, corte, parametros, base):
+    productos = base.set_index('producto_id')
+    codigo = st.selectbox('Producto para sensibilidad y cobertura', productos.index.tolist(),
+                          format_func=lambda valor: productos.at[valor, 'nombre'], key='producto_sensibilidad')
+    fila = productos.loc[codigo]
+    venta, stock = fila['demanda_diaria'], fila['stock_actual']
+    if pd.isna(venta) or pd.isna(stock):
+        st.info('Se necesita inventario en el corte y una ventana completa de ventas para este producto.')
+        return
+
+    st.markdown('**Sensibilidad a la demanda**')
+    st.caption('Cambia solo la demanda respecto a la base, con el stock y el plazo del corte.')
+    producto = demanda[demanda['producto_id'].eq(codigo)]
+    sensibilidad = []
+    for cambio in (-40, -20, 0, 20, 40):
+        resultado = calcular_reposicion(producto, inventario, corte, **parametros, variacion=cambio).iloc[0]
+        sensibilidad.append({
+            'Variación de demanda (%)': cambio, 'Punto de reorden': int(resultado['punto_reorden']),
+            'Prioridad por riesgo': resultado['prioridad'], 'Cantidad sugerida': int(resultado['cantidad_sugerida']),
+        })
+    st.dataframe(sensibilidad, hide_index=True, width='stretch')
+
+    st.markdown('**Stock para una meta de cobertura**')
+    dias = st.number_input('Días de venta que quieres cubrir', min_value=1, max_value=60,
+                           value=7, key='dias_meta_cobertura')
+    # El promedio proviene de unidades enteras en una ventana completa.
+    ritmo_exacto = Fraction(venta).limit_denominator(int(fila['dias_observados']))
+    meta = ceil(ritmo_exacto * dias)
+    a, b = st.columns(2)
+    a.metric('Stock para la meta', numero(meta), border=True)
+    b.metric('Unidades que faltan', numero(max(meta - stock, 0)), border=True)
+    st.caption(f'La meta usa la demanda base de {venta:.2f} unidades/día y el stock actual de {numero(stock)} unidades.')
 
 
 def panel_evaluacion(productos, ventas, corte, ventana, grafico):
@@ -147,7 +206,10 @@ def panel_evaluacion(productos, ventas, corte, ventana, grafico):
     if medias['Media móvil'] > medias['Ingenuo semanal']:
         st.info('En este histórico, la referencia semanal obtiene menor MAE que la media móvil. Conviene revisar la estacionalidad antes de adoptar la media como política operativa.')
     nombres = productos.set_index('producto_id')['nombre'].to_dict()
-    codigo = st.selectbox('Producto para revisar la evaluación', detalle['producto_id'].unique().tolist(),
+    codigos = detalle['producto_id'].unique().tolist()
+    if 'producto_evaluacion' in st.session_state and st.session_state['producto_evaluacion'] not in codigos:
+        del st.session_state['producto_evaluacion']
+    codigo = st.selectbox('Producto para revisar la evaluación', codigos,
                           format_func=lambda valor: nombres[valor], key='producto_evaluacion')
     puntos = detalle[detalle['producto_id'].eq(codigo)]
     reales = puntos[['fecha', 'real']].drop_duplicates('fecha').rename(columns={'real': 'unidades'})

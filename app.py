@@ -9,7 +9,7 @@ import streamlit as st
 from src.datos import ErrorDatos, cargar_csv, validar_relaciones
 from src.indicadores import indicadores, preparar_resumen
 from src.demanda import estimar_demanda
-from src.panel_analisis import panel_reposicion, panel_evaluacion, panel_segmentacion
+from src.panel_analisis import panel_reposicion, panel_escenarios, panel_evaluacion, panel_segmentacion
 from src.panel_quiebres import panel_quiebres
 
 
@@ -19,8 +19,8 @@ VERDE = '#16834b'
 COLORES = {'Sin stock': '#ce5547', 'Bajo mínimo': '#d69b35',
            'En nivel mínimo': '#647fbb', 'Disponible': VERDE, 'Sin datos': '#8b9490'}
 CONTROLES_ANALISIS = {
+    'Evaluación de demanda': ('horizonte_demanda', 'producto_evaluacion'),
     'Alertas de quiebre': ('modelo_quiebres', 'umbral_quiebres', 'curva_quiebres'),
-    'Evaluación de demanda': ('horizonte_demanda',),
     'Segmentación': ('metodo_segmentacion', 'grupos_kmeans'),
 }
 NOMBRES = {'producto_id': 'Código', 'nombre': 'Producto', 'categoria': 'Categoría',
@@ -176,8 +176,8 @@ def main():
     if sin_ventas:
         st.caption(f'{sin_ventas} producto(s) sin registros de ventas en el periodo; no se interpretan automáticamente como cero ventas.')
 
-    general, detalle, reposicion, avanzado, alcance = st.tabs([
-        'Vista general', 'Inventario', 'Reposición', 'Análisis avanzado', 'Datos y alcance'])
+    general, detalle, reposicion, escenarios, avanzado, alcance = st.tabs([
+        'Vista general', 'Inventario', 'Reposición', 'Escenarios What-If', 'Pronóstico y modelos', 'Datos y alcance'])
     ventas_filtradas = ventas[ventas['producto_id'].isin(catalogo['producto_id']) &
                               ventas['fecha'].between(pd.Timestamp(inicio), pd.Timestamp(fin))]
     with general:
@@ -237,10 +237,11 @@ def main():
 
     demanda = estimar_demanda(catalogo, ventas, corte, ventana)
     with reposicion:
-        panel_reposicion(demanda, inventario, corte, ventana)
+        base, parametros = panel_reposicion(demanda, inventario, corte, ventana)
+    with escenarios:
+        panel_escenarios(demanda, inventario, corte, ventana, parametros, base)
     with avanzado:
-        analisis = st.selectbox('Elegir análisis', list(CONTROLES_ANALISIS),
-                               index=None, placeholder='Selecciona un análisis', key='analisis_avanzado')
+        analisis = st.selectbox('Elegir análisis', list(CONTROLES_ANALISIS), key='analisis_avanzado')
         # Streamlit limpia los valores de los widgets que no dibuja en este ciclo.
         for opcion, claves in CONTROLES_ANALISIS.items():
             if opcion != analisis:

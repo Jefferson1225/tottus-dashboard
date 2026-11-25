@@ -53,6 +53,12 @@ El escenario conserva los archivos y aplica tres cambios comunes a la selección
 
 Recalculamos seguridad, punto de reorden, objetivo y cantidades con esos valores. Con tres cambios iguales a cero, los resultados son idénticos a los de la política base. El CSV de comparación incluye los parámetros, el corte y la ventana para interpretar la propuesta.
 
+Hay dos casos listos para comparar en el mismo corte. **Favorable** reduce la demanda un 20 % y aumenta el stock un 20 %. **Temporada alta con retraso** aumenta la demanda un 20 % y añade dos días al plazo de entrega. Ambos usan porcentajes editables.
+
+En **Sensibilidad y meta de cobertura**, elegimos un producto. La tabla cambia la demanda de −40 % a +40 % en pasos de 20 puntos porcentuales, con el stock y los plazos de la política base. Muestra cómo cambian el punto de reorden, la prioridad y la cantidad sugerida.
+
+La búsqueda de objetivo parte de los días que queremos cubrir. Para una meta de `k` días y demanda diaria `d`, el stock objetivo de cobertura es `ceil(d × k)`. La brecha es la diferencia positiva frente al stock actual. Esta meta usa la demanda base y corresponde únicamente a los días que pide el usuario. La propuesta general de reposición usa además sus propios parámetros de entrega, revisión y seguridad.
+
 ## Segmentación de productos
 
 Aplicamos StandardScaler a venta diaria media y CV. K-means usa centroides e incluye inercia para el método del codo. K-medoids usa productos como centros y reduce la suma de distancias mediante intercambios. Ward agrupa por el aumento de varianza dentro de los grupos y permite explorar las uniones en el dendrograma. Exigimos tantos perfiles distintos como grupos solicitados y excluimos los históricos incompletos.
@@ -74,3 +80,16 @@ El umbral modifica precisión, recall, F1 y la matriz de confusión. La curva pr
 Los datos de ejemplo comparten la misma simulación de ventas e inventario. Con archivos propios, comprobamos que el historial concuerde con los otros archivos donde coinciden producto y fecha. La clasificación no altera las cantidades de reposición ni genera pedidos.
 
 Referencias técnicas: [K-means](https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html), [silueta](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.silhouette_score.html), [validación por fecha](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.TimeSeriesSplit.html) y [métricas de evaluación](https://scikit-learn.org/stable/modules/model_evaluation.html).
+
+## Correspondencia con el LRPD
+
+| Objetivo del proyecto | Dónde se demuestra |
+| --- | --- |
+| OE1 · Gestionar productos, ventas e inventario | Carga y validación de CSV, filtros, inventario por producto y formatos en **Datos y alcance**. |
+| OE2 · Estimar y evaluar la demanda | Demanda diaria por producto en **Reposición** y evaluación temporal en **Pronóstico y modelos**. |
+| OE3 · Determinar el riesgo de quiebre | Comparación de stock, demanda y punto de reorden en **Reposición**, con prioridad por riesgo. |
+| OE4 · Recomendar reposición | Cantidad sugerida, explicación por producto y descarga de la propuesta en **Reposición**. |
+| OE5 · Visualizar la decisión | Indicadores y evolución de ventas en **Vista general**, stock en **Inventario** y variables de decisión en **Reposición**. |
+| OE6 · Simular escenarios | Comparación de riesgo y cantidad al variar demanda, demora y stock en **Escenarios What-If**. |
+
+Los apartados IV.3 y V.2 del LRPD se trabajan con los dos casos contrastantes, la sensibilidad a la demanda, la meta de cobertura y el recorrido del README. La adopción organizacional, el costo-beneficio y el monitoreo pertenecen al informe de factibilidad. El historial simulado permite demostrar el flujo y comparar resultados bajo los supuestos del modelo.
