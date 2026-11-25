@@ -15,21 +15,18 @@ def _evaluar(historial, corte):
     return evaluar_quiebres(historial, corte)
 
 
-def panel_quiebres(productos, seleccion, ventas, inventario, corte, ejemplo, archivo_ejemplo, grafico):
+def panel_quiebres(productos, seleccion, ventas, inventario, corte, ejemplo, origen, grafico):
     st.subheader('Alertas para el próximo cierre')
     st.caption('El objetivo es anticipar qué productos terminarán el día siguiente con stock cero.')
     st.caption(f'Los modelos usan hasta {DIAS_MODELO} días de historial hasta el corte seleccionado.')
     if ejemplo:
-        origen = archivo_ejemplo
         st.caption('Fuente: historial simulado de ventas y stock al cierre, conciliado con el inventario general.')
-    else:
-        origen = st.file_uploader('Historial diario de stock (CSV)', type='csv', key='historial_stock')
-        if origen is None:
-            st.info('Carga un historial diario para calcular alertas con tus datos.')
-            st.code('fecha;producto_id;unidades_vendidas;stock_cierre', language=None)
-            st.download_button('Descargar formato de historial', b'fecha;producto_id;unidades_vendidas;stock_cierre\n',
-                               file_name='historial_stock.csv', mime='text/csv')
-            return
+    elif origen is None:
+        st.info('Abre «Historial para alertas» y carga el historial diario.')
+        st.code('fecha;producto_id;unidades_vendidas;stock_cierre', language=None)
+        st.download_button('Descargar formato de historial', b'fecha;producto_id;unidades_vendidas;stock_cierre\n',
+                           file_name='historial_stock.csv', mime='text/csv')
+        return
     try:
         historial = cargar_csv(origen, 'historial_stock')
         historial = historial[historial['fecha'].le(pd.Timestamp(corte))]

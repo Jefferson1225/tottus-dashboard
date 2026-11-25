@@ -8,6 +8,10 @@ from src.reposicion import calcular_reposicion
 from src.segmentacion import METODOS, diagnostico_kmeans, ramas_ward, segmentar_productos
 
 
+ORDEN_PRIORIDAD = {'Alta': 0, 'Media': 1, 'Baja': 2, 'Sin demanda reciente': 3,
+                   'Demanda simulada nula': 4, 'No evaluable': 5}
+
+
 @st.cache_data(max_entries=32, show_spinner=False)
 def _evaluacion(productos, ventas, corte, ventana, horizonte):
     return evaluar_demanda(productos, ventas, corte, ventana, dias_prueba=14, horizonte=horizonte)
@@ -28,44 +32,79 @@ def numero(valor):
 
 
 def panel_reposicion(demanda, inventario, corte, ventana):
-    st.subheader('De los datos a una propuesta de reposición')
-    st.caption(f'Histórico: últimos {ventana} días hasta el {corte:%d/%m/%Y}. '
-               'Los parámetros se aplican a todos los productos filtrados.')
-    with st.container(border=True):
-        st.markdown('**Política base**')
+    st.subheader('Propuesta de reposición')
+    with st.expander('Ajustar política de reposición'):
         a, b, c = st.columns(3)
         plazo = a.number_input('Plazo de entrega (días)', 0, 60, 3, key='plazo')
         revision = b.number_input('Revisar cada (días)', 1, 60, 7, key='revision')
         seguridad = c.number_input('Seguridad (días de venta)', 0, 30, 2, key='seguridad')
-        st.caption('El stock mínimo del CSV sigue siendo una alerta descriptiva. El stock de seguridad se calcula a partir de los días definidos aquí.')
+    st.caption(f'Demanda estimada con {ventana} días hasta el {corte:%d/%m/%Y} · '
+               f'Entrega en {plazo} días · Revisión cada {revision} días · Seguridad de {seguridad} días')
+
+    parametros = dict(plazo=plazo, revision=revision, seguridad=seguridad)
+    base = calcular_reposicion(demanda, inventario, corte, **parametros).sort_values(
+        ['prioridad', 'cantidad_sugerida', 'nombre'], ascending=[True, False, True],
+        key=lambda columna: columna.map(ORDEN_PRIORIDAD) if columna.name == 'prioridad' else columna)
+    total_base = base['cantidad_sugerida'].sum(min_count=1)
+    st.metric('Unidades sugeridas · base', numero(total_base), border=True)
+    columnas = {'nombre': 'Producto', 'stock_actual': 'Stock actual', 'prioridad': 'Prioridad',
+                'cantidad_sugerida': 'Cantidad sugerida'}
+    st.dataframe(base[list(columnas)].rename(columns=columnas), hide_index=True, width='stretch',
+                 column_config={'Cantidad sugerida': st.column_config.NumberColumn(format='%d')})
+    excluidos = base['prioridad'].eq('No evaluable').sum()
+    if excluidos:
+        st.warning(f'{excluidos} producto(s) tienen histórico incompleto o falta de inventario.')
+    st.download_button('Descargar propuesta CSV',
+                       base[['producto_id', *columnas]].assign(fecha_corte=str(corte), ventana_dias=ventana, **parametros)
+                       .to_csv(index=False, sep=';').encode('utf-8-sig'),
+                       file_name=f'reposicion_{corte:%Y%m%d}.csv', mime='text/csv')
+
+    with st.expander('Detalle del cálculo'):
+        nombres = base.set_index('producto_id')['nombre']
+        codigo = st.selectbox('Explicar un producto', nombres.index.tolist(),
+                              format_func=nombres.__getitem__, key='producto_explicacion')
+        fila = base.set_index('producto_id').loc[codigo]
+        st.write(fila['explicacion'])
+        venta = fila['demanda_diaria']
+        cobertura = fila['cobertura_dias']
+        venta_texto = f'{venta:.2f} unidades/día' if pd.notna(venta) else '—'
+        cobertura_texto = f'{cobertura:.2f} días' if pd.notna(cobertura) else '—'
+        st.caption(f'Venta diaria estimada: {venta_texto} · Cobertura: {cobertura_texto}')
+        st.caption(f'Punto de reorden: {numero(fila["punto_reorden"])} · '
+                   f'Stock de seguridad: {numero(fila["stock_seguridad"])} · '
+                   f'Stock objetivo: {numero(fila["stock_objetivo"])}')
+        st.markdown('''
+La prioridad es **alta** si el stock es igual o menor que la venta estimada durante el plazo de entrega.
+Es **media** si el stock supera esa venta pero alcanza el punto de reorden, y **baja** si supera el punto de reorden.
+
+El punto de reorden suma las ventas esperadas durante la entrega y el stock de seguridad. Si el producto alcanza
+ese umbral, sugerimos las unidades que faltan para cubrir la entrega, el periodo entre revisiones y la seguridad.
+La propuesta supone cero pedidos en tránsito y cero reservas.
+''')
+
+    if st.checkbox('Simular escenario (What-If)', key='mostrar_escenario'):
+        _panel_escenario(demanda, inventario, corte, ventana, parametros, base, total_base)
+    else:
+        # Mantiene los ajustes cuando los controles dejan de dibujarse.
+        for clave in ('variacion_demanda', 'retraso', 'cambio_stock'):
+            if clave in st.session_state:
+                st.session_state[clave] = st.session_state[clave]
+
+
+def _panel_escenario(demanda, inventario, corte, ventana, parametros, base, total_base):
     with st.container(border=True):
-        st.markdown('**What-If · modificar el escenario**')
         a, b, c = st.columns(3)
         variacion = a.slider('Variación de demanda (%)', -100, 100, 0, 10, key='variacion_demanda')
         retraso = b.slider('Retraso adicional (días)', 0, 14, 0, key='retraso')
         cambio_stock = c.slider('Variación del stock (%)', -100, 100, 0, 10, key='cambio_stock')
-        st.caption('Los cambios se aplican solo al escenario. El stock simulado se redondea hacia abajo a unidades completas; los CSV permanecen iguales.')
+        st.caption('Se compara el escenario con la política base para el mismo corte.')
 
-    parametros = dict(plazo=plazo, revision=revision, seguridad=seguridad)
-    base = calcular_reposicion(demanda, inventario, corte, **parametros)
     escenario = calcular_reposicion(demanda, inventario, corte, **parametros,
                                     variacion=variacion, retraso=retraso, cambio_stock=cambio_stock)
-    total_base = base['cantidad_sugerida'].sum(min_count=1)
     total_escenario = escenario['cantidad_sugerida'].sum(min_count=1)
-    a, b, c, d = st.columns(4)
-    a.metric('Unidades sugeridas · base', numero(total_base), border=True)
-    b.metric('Unidades sugeridas · escenario', numero(total_escenario),
+    st.metric('Unidades sugeridas · escenario', numero(total_escenario),
              delta=None if pd.isna(total_escenario) else numero(total_escenario - total_base),
              delta_color='off', border=True)
-    c.metric('Prioridad alta · escenario', numero(escenario['prioridad'].eq('Alta').sum()), border=True,
-             help='Stock que no supera las ventas estimadas durante el plazo de entrega. Es una regla, no una probabilidad.')
-    d.metric('Productos evaluables', numero(base['cantidad_sugerida'].notna().sum()), border=True)
-    excluidos = base[base['prioridad'].eq('No evaluable')]
-    if not excluidos.empty:
-        st.warning(f'{len(excluidos)} producto(s) no evaluables por histórico incompleto o falta de inventario. Las cantidades desconocidas quedan vacías.')
-        with st.expander('Revisar productos no evaluables'):
-            st.dataframe(excluidos[['producto_id', 'nombre', 'explicacion']].rename(columns={
-                'producto_id': 'Código', 'nombre': 'Producto', 'explicacion': 'Motivo'}), hide_index=True, width='stretch')
 
     comparacion = base[['producto_id', 'nombre', 'categoria', 'demanda_diaria', 'stock_evaluado',
                        'punto_reorden', 'cantidad_sugerida', 'prioridad']].rename(columns={
@@ -76,43 +115,15 @@ def panel_reposicion(demanda, inventario, corte, ventana):
                                                'stock_seguridad', 'stock_objetivo', 'cobertura_dias', 'explicacion']],
                                     on='producto_id', validate='one_to_one')
     comparacion['cambio_unidades'] = comparacion['cantidad_sugerida'] - comparacion['pedido_base']
-    orden = {'Alta': 0, 'Media': 1, 'Baja': 2, 'Sin demanda reciente': 3, 'Demanda simulada nula': 4, 'No evaluable': 5}
-    comparacion = comparacion.sort_values('prioridad', key=lambda serie: serie.map(orden))
-    etiquetas = {'producto_id': 'Código', 'nombre': 'Producto', 'demanda_diaria': 'Venta diaria base',
-                 'stock_base': 'Stock base', 'pedido_base': 'Sugerencia base', 'stock_evaluado': 'Stock escenario',
-                 'cantidad_sugerida': 'Sugerencia escenario', 'punto_reorden': 'Reorden escenario',
-                 'prioridad': 'Prioridad escenario', 'cambio_unidades': 'Cambio (unidades)'}
-    visibles = list(etiquetas)
-    st.dataframe(comparacion[visibles].rename(columns=etiquetas).round(2), hide_index=True, width='stretch')
-    st.caption('Una sugerencia de 0 indica que la política no activa un pedido bajo esos supuestos. «Sin demanda reciente» no garantiza ausencia de demanda futura.')
-
-    nombres = comparacion.set_index('producto_id')['nombre'].to_dict()
-    codigo = st.selectbox('Explicar un producto', comparacion['producto_id'].tolist(),
-                          format_func=lambda valor: nombres[valor], key='producto_explicacion')
-    fila = comparacion.set_index('producto_id').loc[codigo]
-    st.write(fila['explicacion'])
-    if pd.notna(fila['demanda_escenario']):
-        st.caption(f'Venta diaria estimada: {fila["demanda_escenario"]:.2f} unidades · '
-                   f'Seguridad: {numero(fila["stock_seguridad"])} unidades · '
-                   f'Stock objetivo: {numero(fila["stock_objetivo"])} unidades · '
-                   f'Cobertura: {"sin consumo estimado" if fila["demanda_escenario"] == 0 else numero(fila["cobertura_dias"]) + " días (aprox.)"}')
-    exportacion = comparacion.assign(fecha_corte=str(corte), ventana_dias=ventana, plazo_base=plazo,
-                                     revision_dias=revision, seguridad_dias=seguridad,
+    comparacion = comparacion.sort_values('prioridad', key=lambda serie: serie.map(ORDEN_PRIORIDAD))
+    etiquetas = {'nombre': 'Producto', 'prioridad_base': 'Prioridad base', 'prioridad': 'Prioridad escenario',
+                 'pedido_base': 'Unidades base', 'cantidad_sugerida': 'Unidades escenario', 'cambio_unidades': 'Cambio'}
+    st.dataframe(comparacion[list(etiquetas)].rename(columns=etiquetas), hide_index=True, width='stretch')
+    exportacion = comparacion.assign(fecha_corte=str(corte), ventana_dias=ventana, plazo_base=parametros['plazo'],
+                                     revision_dias=parametros['revision'], seguridad_dias=parametros['seguridad'],
                                      variacion_demanda_pct=variacion, retraso_dias=retraso, cambio_stock_pct=cambio_stock)
     st.download_button('Descargar comparación de escenarios', exportacion.to_csv(index=False, sep=';').encode('utf-8-sig'),
                        file_name=f'escenarios_{corte:%Y%m%d}.csv', mime='text/csv')
-    with st.expander('Cómo se obtiene la propuesta'):
-        st.markdown('''
-1. **Venta diaria base:** promedio de los últimos días completos de la ventana.
-2. **Seguridad:** venta diaria × días de seguridad, redondeada hacia arriba.
-3. **Punto de reorden:** venta diaria × plazo de entrega + seguridad, redondeado hacia arriba.
-4. **Objetivo:** venta diaria × (plazo + periodo de revisión) + seguridad, redondeado hacia arriba.
-5. **Cantidad sugerida:** objetivo − stock, solo cuando el stock está en o bajo el punto de reorden; nunca negativa.
-
-Prioridad **alta**: el stock no supera las ventas estimadas durante el plazo. **Media**: alcanza el punto de reorden con colchón de seguridad. **Baja**: stock superior al punto de reorden.
-
-Suponemos pedidos en tránsito y reservas iguales a cero. No se consideran lotes mínimos, presupuesto, vencimientos ni capacidad. La propuesta requiere revisión del responsable y no ejecuta compras.
-''')
 
 
 def panel_evaluacion(productos, ventas, corte, ventana, grafico):

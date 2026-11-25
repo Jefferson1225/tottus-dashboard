@@ -18,6 +18,11 @@ DATOS_EJEMPLO = RAIZ / 'data' / 'demo'
 VERDE = '#16834b'
 COLORES = {'Sin stock': '#ce5547', 'Bajo mínimo': '#d69b35',
            'En nivel mínimo': '#647fbb', 'Disponible': VERDE, 'Sin datos': '#8b9490'}
+CONTROLES_ANALISIS = {
+    'Alertas de quiebre': ('modelo_quiebres', 'umbral_quiebres', 'curva_quiebres'),
+    'Evaluación de demanda': ('horizonte_demanda',),
+    'Segmentación': ('metodo_segmentacion', 'grupos_kmeans'),
+}
 NOMBRES = {'producto_id': 'Código', 'nombre': 'Producto', 'categoria': 'Categoría',
            'unidades_vendidas': 'Unidades vendidas', 'stock_actual': 'Stock actual',
            'stock_minimo': 'Stock mínimo', 'estado': 'Estado',
@@ -132,6 +137,7 @@ def main():
                                    placeholder='Todos los productos', key='productos')
         if seleccion:
             catalogo = catalogo[catalogo['producto_id'].isin(seleccion)]
+        st.caption(f'Productos analizados · {len(catalogo):,}'.replace(',', ' '))
 
         limites = (ventas['fecha'].min().date(), ventas['fecha'].max().date())
         periodo = st.date_input('Periodo de ventas', value=limites, min_value=limites[0], max_value=limites[1],
@@ -139,8 +145,9 @@ def main():
         cortes = sorted(inventario['fecha_corte'].dt.date.unique(), reverse=True)
         corte = st.selectbox('Corte de inventario', cortes, format_func=lambda fecha: fecha.strftime('%d/%m/%Y'), key='corte')
         st.caption('El periodo filtra las ventas. El stock corresponde únicamente al corte seleccionado.')
-        ventana = st.selectbox('Ventana del modelo (días)', [14, 28, 42, 56], index=1, key='ventana_modelo')
-        st.caption('Demanda, evaluación y segmentos usan el histórico hasta el corte de inventario, independientemente del periodo descriptivo.')
+        with st.expander('Ventana de análisis'):
+            ventana = st.selectbox('Ventana del modelo (días)', [14, 28, 42, 56], index=1, key='ventana_modelo')
+            st.caption('El cálculo de demanda usa el histórico hasta el corte de inventario.')
 
     if len(periodo) != 2:
         st.info('Selecciona una fecha inicial y una fecha final para analizar las ventas.')
@@ -153,14 +160,13 @@ def main():
     resumen = preparar_resumen(catalogo, ventas, inventario, corte, inicio, fin)
     valores = indicadores(resumen)
     st.caption(f'VENTAS: {inicio:%d/%m/%Y} — {fin:%d/%m/%Y}  /  INVENTARIO AL {corte:%d/%m/%Y}')
-    columnas = st.columns(4)
+    columnas = st.columns(3)
     for columna, etiqueta, clave, ayuda in zip(
-        columnas, ['Productos analizados', 'Unidades vendidas', 'Productos sin stock', 'Bajo stock mínimo'],
-        ['productos', 'unidades', 'sin_stock', 'bajo_minimo'],
-        ['Productos del catálogo con los filtros seleccionados.',
-         'Suma de unidades registradas en el periodo. No es demanda estimada.',
+        columnas, ['Unidades vendidas', 'Productos sin stock', 'Stock bajo, aún disponible'],
+        ['unidades', 'sin_stock', 'bajo_minimo'],
+        ['Suma de las unidades vendidas en el periodo seleccionado.',
          'Productos con stock igual a cero en el corte de inventario.',
-         'Stock menor al mínimo. Puede incluir productos sin stock; no sumes ambos indicadores.'],
+         'Productos con stock mayor a cero y menor que el mínimo en el corte de inventario.'],
     ):
         columna.metric(etiqueta, f'{valores[clave]:,}'.replace(',', ' '), border=True, help=ayuda)
 
@@ -170,9 +176,8 @@ def main():
     if sin_ventas:
         st.caption(f'{sin_ventas} producto(s) sin registros de ventas en el periodo; no se interpretan automáticamente como cero ventas.')
 
-    general, detalle, reposicion, quiebres, evaluacion, segmentos, alcance = st.tabs([
-        'Vista general', 'Detalle de inventario', 'Reposición y escenarios',
-        'Alertas de quiebre', 'Evaluación de demanda', 'Segmentación', 'Datos y alcance'])
+    general, detalle, reposicion, avanzado, alcance = st.tabs([
+        'Vista general', 'Inventario', 'Reposición', 'Análisis avanzado', 'Datos y alcance'])
     ventas_filtradas = ventas[ventas['producto_id'].isin(catalogo['producto_id']) &
                               ventas['fecha'].between(pd.Timestamp(inicio), pd.Timestamp(fin))]
     with general:
@@ -221,66 +226,41 @@ def main():
             else:
                 st.info('No hay ventas registradas para esta selección.')
 
-        with st.container(border=True):
-            st.subheader('Productos que requieren atención')
-            st.caption('Stock cero o por debajo del mínimo definido. La brecha indica el faltante frente al mínimo; no es una recomendación de compra.')
-            alertas = resumen[resumen['estado'].isin(['Sin stock', 'Bajo mínimo'])]
-            if alertas.empty:
-                st.info('No se identificaron productos con stock cero o bajo mínimo entre los inventarios conocidos.')
-            else:
-                tabla_productos(alertas, 'tabla_alertas')
-
     with detalle:
         st.subheader('Inventario por producto')
-        st.caption('Sin stock: 0 unidades · Bajo mínimo: stock < mínimo · En nivel mínimo: stock = mínimo · Disponible: stock > mínimo · Sin datos: falta inventario.')
+        st.caption('Los productos sin stock y los que tienen stock bajo aparecen primero.')
         tabla_productos(resumen, 'tabla_inventario')
         st.download_button('Descargar detalle CSV',
                            resumen.rename(columns=NOMBRES).to_csv(index=False, sep=';').encode('utf-8-sig'),
                            file_name=f'inventario_{corte:%Y%m%d}.csv', mime='text/csv')
-        st.caption('Los conteos de «sin stock» y «bajo mínimo» pueden coincidir. Los valores vacíos son desconocidos, no ceros.')
-        with st.container(border=True):
-            st.subheader('Stock actual frente al mínimo')
-            conocidos = resumen.dropna(subset=['stock_actual']).head(10)
-            if conocidos.empty:
-                st.info('No hay inventario conocido para graficar.')
-            else:
-                barras = conocidos.melt(id_vars=['nombre'], value_vars=['stock_actual', 'stock_minimo'],
-                                          var_name='medida', value_name='unidades')
-                barras['medida'] = barras['medida'].map({'stock_actual': 'Stock actual', 'stock_minimo': 'Stock mínimo'})
-                grafico(barras, {
-                    'mark': {'type': 'bar', 'cornerRadiusEnd': 3},
-                    'encoding': {
-                        'y': {'field': 'nombre', 'type': 'nominal', 'title': None, 'sort': conocidos['nombre'].tolist()},
-                        'x': {'field': 'unidades', 'type': 'quantitative', 'title': 'Unidades'},
-                        'yOffset': {'field': 'medida'},
-                        'color': {'field': 'medida', 'scale': {'domain': ['Stock actual', 'Stock mínimo'],
-                                                            'range': [VERDE, '#cfad54']}, 'legend': {'title': None, 'orient': 'top'}},
-                        'tooltip': [{'field': 'nombre', 'title': 'Producto'}, {'field': 'medida', 'title': 'Medida'},
-                                    {'field': 'unidades', 'title': 'Unidades'}],
-                    },
-                })
-                st.caption('Hasta 10 productos, ordenados por estado y nombre. La tabla contiene la selección completa.')
+        st.caption('Los campos vacíos indican que falta el dato correspondiente.')
 
     demanda = estimar_demanda(catalogo, ventas, corte, ventana)
     with reposicion:
         panel_reposicion(demanda, inventario, corte, ventana)
-    with quiebres:
-        panel_quiebres(productos, catalogo, ventas, inventario, corte, fuente == 'Datos de ejemplo',
-                       DATOS_EJEMPLO / 'historial_stock.csv', grafico)
-    with evaluacion:
-        panel_evaluacion(catalogo, ventas, corte, ventana, grafico)
-    with segmentos:
-        panel_segmentacion(demanda, grafico)
+    with avanzado:
+        analisis = st.selectbox('Elegir análisis', list(CONTROLES_ANALISIS),
+                               index=None, placeholder='Selecciona un análisis', key='analisis_avanzado')
+        # Streamlit limpia los valores de los widgets que no dibuja en este ciclo.
+        for opcion, claves in CONTROLES_ANALISIS.items():
+            if opcion != analisis:
+                for clave in claves:
+                    if clave in st.session_state:
+                        st.session_state[clave] = st.session_state[clave]
+        ejemplo = fuente == 'Datos de ejemplo'
+        historial = DATOS_EJEMPLO / 'historial_stock.csv'
+        if not ejemplo:
+            with st.expander('Historial para alertas'):
+                historial = st.file_uploader('Historial diario de stock (CSV)', type='csv', key='historial_stock')
+        if analisis == 'Alertas de quiebre':
+            panel_quiebres(productos, catalogo, ventas, inventario, corte, ejemplo, historial, grafico)
+        elif analisis == 'Evaluación de demanda':
+            panel_evaluacion(catalogo, ventas, corte, ventana, grafico)
+        elif analisis == 'Segmentación':
+            panel_segmentacion(demanda, grafico)
 
     with alcance:
-        st.subheader('Del análisis de inventario al soporte de decisiones')
-        st.write('Integramos ventas e inventario con una demanda de referencia, una política de reposición explicable y escenarios de demanda, plazo y stock. La vista general conserva sus alertas descriptivas por stock mínimo.')
-        uno, dos = st.columns(2)
-        with uno:
-            st.markdown('**Funciones del dashboard**\n\n- Datos CSV, filtros e indicadores.\n- Evaluación de demanda por horizonte.\n- Punto de reorden y escenarios What-If.\n- Alertas de quiebre con tres clasificadores.\n- Segmentación con K-means, K-medoids y Ward.\n- Descarga de tablas analíticas.')
-        with dos:
-            st.markdown('**Alcance del análisis**\n\n- La reposición usa la media móvil y los parámetros de la política.\n- Las alertas estiman stock cero al siguiente cierre.\n- Los escenarios no modifican el inventario.\n- Los pedidos en tránsito y las reservas se gestionan fuera del panel.')
-        st.divider()
+        st.subheader('Origen de los datos')
         if fuente == 'Datos de ejemplo':
             st.markdown('**Catálogo y procedencia**')
             total_ventas = f'{len(ventas):,}'.replace(',', ' ')

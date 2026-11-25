@@ -6,23 +6,13 @@ Reunimos las ventas históricas y el stock disponible para identificar los produ
 
 ## Funciones
 
-Integramos el análisis de ventas e inventario con una política de reposición:
+- **Vista general.** Tres indicadores muestran las unidades vendidas, los productos agotados y los productos con stock bajo que aún tienen unidades. Los gráficos permiten ver la evolución diaria o mensual y las ventas por categoría.
+- **Inventario.** Consultamos el stock, el mínimo y las ventas por producto, con los agotados y los que tienen stock bajo primero. La tabla se puede descargar.
+- **Reposición.** Ordenamos los productos por prioridad y vemos cuántas unidades sugiere pedir la política base. En **Detalle del cálculo** podemos revisar la demanda estimada, la cobertura y el punto de reorden. En **Simular escenario (What-If)** podemos variar demanda, plazo y stock.
+- **Análisis avanzado.** Desde un selector se puede evaluar el pronóstico, comparar las alertas de quiebre de CART, Random Forest y SVM, o segmentar el catálogo con K-means, K-medoids y Ward.
+- **Datos y alcance.** Incluye enlaces a las fichas públicas de Tottus y los formatos CSV.
 
-- Indicadores de productos analizados, unidades vendidas, productos sin stock y productos bajo el mínimo.
-- Filtros por categoría, producto, periodo de ventas y fecha de corte del inventario.
-- Gráficos de evolución diaria o mensual de ventas y ventas por categoría.
-- Alertas de productos sin stock o bajo el mínimo establecido.
-- Detalle de inventario y comparación del stock actual frente al mínimo.
-- Carga y validación de archivos CSV.
-- Descarga del reporte de inventario.
-- Demanda de referencia mediante media móvil sobre un histórico diario completo.
-- Evaluación temporal de ventas acumuladas a 1, 3, 7 o 14 días con MAE, RMSE y WAPE.
-- Punto de reorden, cobertura, prioridad de atención y cantidad sugerida explicada.
-- Comparación What-If de demanda, plazo de entrega y stock.
-- Segmentación por venta diaria y variabilidad con K-means, K-medoids y Ward.
-- Alertas para el próximo cierre con CART, Random Forest y SVM. Podemos ajustar el umbral y comparar los quiebres detectados y omitidos.
-
-La prioridad indica el orden de atención según el stock disponible y la demanda estimada; no expresa una probabilidad de quiebre.
+En el menú lateral podemos filtrar por categoría, producto, periodo de ventas y corte de inventario. La prioridad de reposición se calcula con el stock disponible y la demanda estimada.
 
 ## Tecnologías
 
@@ -101,7 +91,7 @@ El periodo seleccionado filtra las ventas; el stock corresponde a la fecha de co
 
 El [diccionario de datos](docs/diccionario-datos.md) detalla los campos y las reglas utilizadas.
 
-Para calcular **Alertas de quiebre** con archivos propios, carga también `historial_stock.csv` desde esa pestaña. Este archivo es opcional para el resto del dashboard. Debe contener el stock al cierre y las ventas de cada producto por día.
+Para calcular **Alertas de quiebre** con archivos propios, abre **Historial para alertas** en **Análisis avanzado** y carga `historial_stock.csv`. Debe contener el stock al cierre y las ventas de cada producto por día.
 
 ## Estructura del proyecto
 
@@ -140,7 +130,7 @@ Comprobamos la validación de los CSV, los indicadores, el tratamiento de datos 
 
 ## Análisis de demanda y reposición
 
-La **vista general** mantiene las alertas de stock frente al mínimo del CSV. La **brecha al mínimo** describe ese faltante y es independiente de la política del panel **Reposición y escenarios**.
+En **Inventario**, la **brecha al mínimo** muestra cuántas unidades faltan para llegar al mínimo del CSV. En **Reposición**, la **cantidad sugerida** se calcula con la demanda estimada y los parámetros de entrega, revisión y seguridad.
 
 La demanda de referencia es el promedio de ventas diarias de los últimos 28 días hasta el corte de inventario. La ventana puede cambiarse entre 14, 28, 42 y 56 días. Exigimos registros para todos los días; los ceros conocidos son válidos y los días ausentes no se imputan. El filtro de periodo afecta a la vista descriptiva; los modelos utilizan su ventana hasta el corte.
 

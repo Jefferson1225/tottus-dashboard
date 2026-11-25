@@ -31,11 +31,11 @@ def preparar_resumen(productos, ventas, inventario, fecha_corte, inicio, fin):
 
 
 def indicadores(resumen):
-    """Los contadores de stock cero y bajo mínimo pueden coincidir."""
+    """Cuenta cada estado de stock por separado."""
     return {
         'productos': len(resumen),
         'unidades': int(resumen['unidades_vendidas'].sum()),
         'sin_stock': int(resumen['stock_actual'].eq(0).sum()),
-        'bajo_minimo': int(resumen['stock_actual'].lt(resumen['stock_minimo']).sum()),
+        'bajo_minimo': int(resumen['estado'].eq('Bajo mínimo').sum()),
         'sin_inventario': int(resumen['stock_actual'].isna().sum()),
     }

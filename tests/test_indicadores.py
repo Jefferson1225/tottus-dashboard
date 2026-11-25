@@ -41,7 +41,7 @@ class IndicadoresTests(unittest.TestCase):
     def test_totales_manuales_y_umbrales(self):
         self.assertEqual(indicadores(self.resumen()), {
             'productos': 3, 'unidades': 9, 'sin_stock': 1,
-            'bajo_minimo': 1, 'sin_inventario': 1,
+            'bajo_minimo': 0, 'sin_inventario': 1,
         })
 
     def test_periodo_de_ventas_no_cambia_stock(self):
